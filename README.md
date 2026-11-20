@@ -6,6 +6,23 @@ Site Pulse is a small desktop app for Windows and macOS. Once a day it checks th
 
 Made by **[Toolbox Notes](https://toolboxnotes.com/)** — a blog of free, practical tools and guides ([English](https://toolboxnotes.com/en/) · [한국어](https://toolboxnotes.com/ko/)).
 
+## Download
+
+**[Download the latest version →](https://github.com/toolboxnotes/site-pulse/releases/latest)**
+
+| System | File | |
+|---|---|---|
+| Windows 10 / 11 (64-bit) | `Site-Pulse-Windows-v1.3.9.zip` | [Download](https://github.com/toolboxnotes/site-pulse/releases/latest/download/Site-Pulse-Windows-v1.3.9.zip) |
+| macOS 11+ (Apple Silicon and Intel) | `Site-Pulse-Mac-v1.3.9.zip` | [Download](https://github.com/toolboxnotes/site-pulse/releases/latest/download/Site-Pulse-Mac-v1.3.9.zip) |
+
+No installer needed: unzip and double-click **Site Pulse.exe** (Windows) or **Site Pulse.app** (macOS). Chrome or Edge should be installed for the app window. Then follow [Getting started](#getting-started) to connect your Google account.
+
+**First run** — the app is not code-signed, so your system may warn you once:
+- **Windows**: “Windows protected your PC” → click **More info → Run anyway**.
+- **macOS**: right-click **Site Pulse.app → Open → Open** (or System Settings → Privacy & Security → **Open Anyway**).
+
+All versions and changes: [Releases](https://github.com/toolboxnotes/site-pulse/releases).
+
 ![Compare sites](docs/screenshots/compare.png)
 
 ---
@@ -76,7 +93,7 @@ The server only listens on your own computer, checks the `Host` header (DNS rebi
 
 ### 1. Run it
 
-Build it yourself (see below) and double-click `Site Pulse.exe` on Windows or `Site Pulse.app` on macOS. Chrome or Edge must be installed for the app window; otherwise it opens in your default browser.
+[Download](#download) the zip for your system (or [build it yourself](#build)), unzip, and double-click `Site Pulse.exe` on Windows or `Site Pulse.app` on macOS. Chrome or Edge must be installed for the app window; otherwise it opens in your default browser.
 
 ### 2. Create your own Google OAuth client (one time, about 10 minutes)
 
@@ -121,7 +138,17 @@ Settings → Sites → enter the homepage URL and click **Auto-match**: Site Pul
 
 ## Build
 
-Requires Go 1.24 or newer.
+Ready-made builds are on the [Releases page](https://github.com/toolboxnotes/site-pulse/releases/latest) — you only need this section to build from source. Requires [Go 1.24 or newer](https://go.dev/dl/).
+
+**Windows only** (Command Prompt, in the source folder):
+
+```bat
+go build -trimpath -ldflags "-s -w -H=windowsgui" -o "Site Pulse.exe" .
+```
+
+The icon and version info are picked up automatically from `rsrc_windows_amd64.syso`.
+
+**Windows + macOS packages** (macOS, Linux, or Git Bash on Windows):
 
 ```sh
 ./build.sh
