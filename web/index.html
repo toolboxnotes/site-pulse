@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site Pulse</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232a78d6'/%3E%3Cpath d='M4 15l4-4 3 3 5-6 4 4' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  color-scheme:light;
+  --page:#f9f9f7;--surface:#fcfcfb;--card:#ffffff;
+  --ink:#0b0b0b;--ink2:#52514e;--muted:#898781;
+  --grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);
+  --accent:#2a78d6;--accent-ink:#ffffff;--hover:rgba(11,11,11,.05);
+  --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#008300;--s7:#6250d6;--s8:#e34948;
+  --good:#0ca30c;--good-ink:#006300;--warning:#fab219;--serious:#ec835a;--critical:#d03b3b;
+  --font:system-ui,-apple-system,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  color-scheme:dark;
+  --page:#0d0d0d;--surface:#1a1a19;--card:#1a1a19;
+  --ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;
+  --grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);
+  --accent:#3987e5;--hover:rgba(255,255,255,.06);
+  --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#008300;--s7:#9085e9;--s8:#e66767;
+  --good-ink:#0ca30c;
+}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--page);color:var(--ink);font:14px/1.5 var(--font)}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:10px 20px;background:var(--card);border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:8px;font-weight:650;font-size:15px;white-space:nowrap}
+.brand svg{width:24px;height:24px}
+nav{display:flex;gap:2px;flex:1;overflow-x:auto}
+nav a{padding:6px 12px;border-radius:8px;text-decoration:none;color:var(--ink2);white-space:nowrap}
+nav a:hover{background:var(--hover)}
+nav a.active{background:var(--hover);color:var(--ink);font-weight:600}
+.hdr-right{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.lastrun{color:var(--muted);font-size:12px}
+main{max-width:1240px;margin:0 auto;padding:20px}
+h1{font-size:20px;margin:0 0 4px}
+h2{font-size:16px;margin:0 0 12px}
+h3{font-size:14px;margin:16px 0 8px;color:var(--ink2)}
+.sub{color:var(--ink2);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.grow{flex:1}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);cursor:pointer;text-decoration:none;color:var(--ink);white-space:nowrap}
+.btn:hover{background:var(--hover)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.danger{color:var(--critical)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.sm{padding:4px 10px;font-size:13px}
+input[type=text],input[type=password],input[type=number],input[type=time],select,textarea{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 10px;min-width:0}
+textarea{width:100%;min-height:64px;resize:vertical}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink2)}
+label.f>input,label.f>select{color:var(--ink)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:99px;font-size:12px;border:1px solid var(--border);white-space:nowrap}
+.st{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.st i{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none}
+.st.good i{background:var(--good)} .st.warn i{background:var(--warning)} .st.bad i{background:var(--critical)} .st.na i{background:var(--axis)} .st.info i{background:var(--accent)}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--grid);vertical-align:top}
+th{font-weight:600;color:var(--ink2);font-size:12px;white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tbody tr:hover{background:var(--hover)}
+.tablewrap{overflow-x:auto}
+.delta{font-size:12px;display:block}
+.delta.up{color:var(--good-ink)} .delta.down{color:var(--critical)} .delta.flat{color:var(--muted)}
+.alerts{display:flex;flex-direction:column;gap:6px}
+.alert{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-radius:8px;background:var(--surface);border:1px solid var(--border)}
+.alert .ico{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff}
+.alert.error .ico{background:var(--critical)} .alert.warn .ico{background:var(--warning);color:#0b0b0b} .alert.info .ico{background:var(--accent)}
+.alert .lvl{font-size:11px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:.03em}
+.alert .site{font-weight:600}
+.alert .src{color:var(--ink)}
+.alert .how{margin-top:6px;font-size:13px;color:var(--ink2);background:var(--hover);border-radius:6px;padding:6px 10px}
+.alert .how b{color:var(--ink);font-weight:600;margin-right:4px}
+.alert .acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.btn.ghost{border-color:transparent;color:var(--ink2)}
+.alert.ignored{opacity:.55}
+.auscore{display:flex;gap:16px;align-items:center;margin-top:14px;padding:12px 16px;border-radius:10px;background:var(--surface);border:1px solid var(--border)}
+.auscore .big{font-size:34px;font-weight:700;line-height:1} .auscore .big span{font-size:18px;color:var(--muted);font-weight:600}
+.auscore.good{border-color:var(--good)} .auscore.warn{border-color:var(--warning)} .auscore.bad{border-color:var(--critical)}
+.auitems{display:flex;flex-direction:column;gap:2px}
+.auitem{display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid var(--grid)} .auitem:last-child{border-bottom:0}
+.auico{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff;margin-top:1px}
+.auitem.ok .auico{background:var(--good)} .auitem.warn .auico{background:var(--warning);color:#0b0b0b} .auitem.fail .auico{background:var(--critical)} .auitem.skip .auico{background:var(--axis)}
+.aud{color:var(--ink2);margin-top:2px;word-break:break-all} .aulist{margin:4px 0 0;padding-left:18px}
+.star{border:0;background:none;cursor:pointer;font-size:16px;color:var(--axis);padding:0 2px} .star.on{color:var(--s4)}
+.ring{display:flex;flex-direction:column;align-items:center;gap:2px}
+table.cwv td,table.cwv th{padding:5px 10px}
+.tmbar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--hover);gap:2px}
+.tmbar span{display:block;height:100%}
+.rpalert{padding:6px 0;border-bottom:1px solid var(--grid);font-size:13px} .rpalert.error b{color:var(--critical)} .rpalert.warn b{color:#b07800}
+@media print{ header,.noprint,.toast{display:none!important} body{background:#fff} main{max-width:none;padding:0} .card{break-inside:auto;border-color:#ddd} .auitem,.rpalert,tr,.auscore{break-inside:avoid} h2,h3{break-after:avoid} a{color:inherit;text-decoration:none} }
+.aucrit{font-size:12px;color:var(--muted);margin-top:3px} .aucrit b{font-weight:600;color:var(--ink2);margin-right:4px}
+.printonly{display:none}
+@media print{ .printonly{display:inline} details{display:block} details>*{display:block} .auitem{break-inside:avoid} }
+.empty{padding:28px;text-align:center;color:var(--ink2)}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.steps li{display:flex;gap:10px;align-items:center}
+.steps li::before{counter-increment:s;content:counter(s);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--hover);font-size:12px;font-weight:600;flex:none}
+.steps li.done::before{content:"✓";background:var(--good);color:#fff}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:5px 12px;cursor:pointer;color:var(--ink2)}
+.seg button.on{background:var(--hover);color:var(--ink);font-weight:600}
+.chart{position:relative;width:100%}
+.chart svg{display:block;width:100%;overflow:visible}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0 0 8px;font-size:12px;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.legend i.dash{background:none!important;border-top:2px dashed}
+.tip{position:absolute;pointer-events:none;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:140px;z-index:5;display:none}
+.tip .d{color:var(--ink2);margin-bottom:4px}
+.tip .r{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.tip .r span{display:inline-flex;align-items:center;gap:6px}
+.tip .r i{width:8px;height:8px;border-radius:50%}
+.siteform{border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;background:var(--surface)}
+.drop{border:2px dashed var(--axis);border-radius:10px;padding:18px;text-align:center;color:var(--ink2);cursor:pointer}
+.drop.over{border-color:var(--accent);background:var(--hover)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--page);padding:10px 16px;border-radius:8px;z-index:50;max-width:80vw}
+.spin{width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer}
+.kpi.on{outline:2px solid var(--accent)}
+.kpi .l{font-size:12px;color:var(--ink2)}
+.kpi .v{font-size:20px;font-weight:600}
+.checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.check{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.check .t{font-size:12px;color:var(--ink2);margin-bottom:2px}
+details summary{cursor:pointer;color:var(--ink2)}
+.sumcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:16px}
+.sumcard{display:block;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;text-decoration:none;color:var(--ink)}
+.sumcard:hover{border-color:var(--accent)}
+.sitename{display:inline-flex;align-items:center;gap:8px;font-weight:600}
+.sitename i{width:10px;height:10px;border-radius:3px;flex:none}
+.pill{font-size:12px;padding:2px 10px;border-radius:99px;white-space:nowrap;font-weight:600}
+.pill.good{background:rgba(12,163,12,.12);color:var(--good-ink)} .pill.warn{background:rgba(250,178,25,.18);color:var(--ink)} .pill.bad{background:rgba(208,59,59,.14);color:var(--critical)} .pill.na{background:var(--hover);color:var(--ink2)}
+.pill.good::before{content:"● "} .pill.warn::before{content:"▲ "} .pill.bad::before{content:"✕ "}
+.sumstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.sumstats .l{font-size:12px;color:var(--ink2)} .sumstats .v{font-size:22px;font-weight:650;line-height:1.2}
+.chg{display:block;font-size:12px;white-space:nowrap} .chg.up{color:var(--good-ink)} .chg.down{color:var(--critical)} .chg.flat{color:var(--muted)}
+table.board th[scope=row]{min-width:190px;max-width:240px;font-weight:normal}
+table.board td{min-width:150px}
+table.board .rl{font-weight:600;color:var(--ink);font-size:13px} table.board .rh{font-size:12px;color:var(--muted);white-space:normal}
+table.board tr.grp td{background:var(--surface);font-weight:650;font-size:12px;color:var(--ink2);padding:6px 10px;letter-spacing:.02em}
+table.board tbody tr.grp:hover{background:var(--surface)}
+table.board .cv{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+table.tp .chg{display:inline;margin-left:4px}
+table.board td.tot{background:var(--surface)}
+.best{font-size:11px;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:99px;padding:0 6px;vertical-align:2px}
+.bar{height:6px;background:var(--hover);border-radius:3px;margin:6px 0 4px;max-width:120px}
+.bar span{display:block;height:100%;border-radius:3px}
+.spark{display:block;margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{border:1px solid var(--border);background:var(--card);border-radius:99px;padding:4px 12px;cursor:pointer;font-size:13px;color:var(--ink2)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+@media (max-width:760px){header{flex-wrap:wrap}.lastrun{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="var(--accent)"/><path d="M4 15l4-4 3 3 5-6 4 4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Site Pulse</div>
+  <nav id="nav"></nav>
+  <div class="hdr-right">
+    <span class="lastrun" id="lastrun"></span>
+    <button class="btn primary sm" id="collectBtn"></button>
+    <select id="langSel" aria-label="Language"><option value="en">English</option><option value="ko">한국어</option><option value="zh">中文</option></select>
+  </div>
+</header>
+<main id="main"></main>
+<script>
+"use strict";
+// ---------------- i18n ----------------
+const I18N = {
+ nav_overview:["Overview","개요","总览"], nav_compare:["Compare","비교","对比"], nav_keywords:["Keywords","키워드","关键词"], nav_settings:["Settings","설정","设置"],
+ collect:["Check now","지금 확인","立即检查"], collecting:["Checking…","확인 중…","检查中…"],
+ last_check:["Last check","마지막 확인","上次检查"], never:["never","없음","无"],
+ setup_title:["Get started","시작하기","开始使用"],
+ setup_sub:["Finish these steps once. After that the app checks every day by itself.","한 번만 설정하면 이후 매일 자동으로 확인합니다.","完成以下步骤后，每天会自动检查。"],
+ step_client:["Import the OAuth client JSON from Google Cloud","Google Cloud의 OAuth 클라이언트 JSON 가져오기","导入 Google Cloud 的 OAuth 客户端 JSON"],
+ step_signin:["Sign in with Google","Google 계정으로 로그인","登录 Google 账号"],
+ step_sites:["Add your websites","웹사이트 추가","添加网站"],
+ step_bing:["(Optional) Add a Bing Webmaster API key","(선택) Bing 웹마스터 API 키 추가","（可选）添加 Bing Webmaster API 密钥"],
+ go_settings:["Open settings","설정 열기","打开设置"],
+ alerts:["Alerts","알림","提醒"], no_alerts:["No problems found.","문제가 없습니다.","没有发现问题。"],
+ lvl_error:["Critical","심각","严重"], lvl_warn:["Warning","경고","警告"], lvl_info:["Info","정보","信息"],
+ sites_table:["All sites","전체 사이트","所有网站"],
+ platforms:["Connections","연결 상태","连接状态"],
+ col_site:["Site","사이트","网站"], col_status:["Status","상태","状态"], col_speed:["Response","응답","响应"], col_ssl:["SSL","SSL","SSL"], col_domain:["Domain","도메인","域名"], col_adstxt:["ads.txt","ads.txt","ads.txt"], col_index:["Indexed","색인","收录"],
+ latest_day:["Values are the latest complete day; change is vs the 7-day average before it.","값은 가장 최근의 완료된 날짜 기준이며, 변화율은 직전 7일 평균 대비입니다.","数值为最近一个完整日，变化率与之前 7 天平均相比。"],
+ days:["{n} d","{n}일","{n} 天"], ok:["OK","정상","正常"], down:["Down","접속 불가","无法访问"], missing:["Missing","없음","缺失"], mismatch:["Wrong ID","ID 불일치","ID 不符"], na:["—","—","—"],
+ google:["Google","Google","Google"], bing:["Bing","Bing","Bing"], adsense:["AdSense","애드센스","AdSense"],
+ signed_in_as:["Signed in as {e}","{e}(으)로 로그인됨","已登录：{e}"], signed_out:["Not signed in","로그인 안 됨","未登录"], expired:["Sign-in expired — sign in again","로그인이 만료됨 — 다시 로그인하세요","登录已过期，请重新登录"],
+ no_client:["OAuth client not set","OAuth 클라이언트 미설정","未设置 OAuth 客户端"], no_key:["No API key","API 키 없음","没有 API 密钥"], key_ok:["API key set","API 키 설정됨","已设置 API 密钥"], key_invalid:["API key rejected","API 키가 거부됨","API 密钥无效"],
+ ads_none:["No AdSense account","애드센스 계정 없음","没有 AdSense 账号"],
+ // metrics
+ m_ga_users:["GA users","GA 사용자","GA 用户"], m_ga_sessions:["GA sessions","GA 세션","GA 会话"], m_ga_views:["GA page views","GA 페이지뷰","GA 浏览量"],
+ m_gsc_clicks:["Search clicks","검색 클릭","搜索点击"], m_gsc_impr:["Search impressions","검색 노출","搜索展示"], m_gsc_ctr:["Search CTR","검색 CTR","搜索 CTR"], m_gsc_pos:["Avg. position","평균 순위","平均排名"],
+ m_ads_earnings:["AdSense earnings","애드센스 수익","AdSense 收入"], m_ads_pageviews:["AdSense page views","애드센스 페이지뷰","AdSense 浏览量"], m_ads_rpm:["Page RPM","페이지 RPM","网页 RPM"], m_ads_impressions:["Ad impressions","광고 노출","广告展示"], m_ads_clicks:["Ad clicks","광고 클릭","广告点击"],
+ m_bing_clicks:["Bing clicks","Bing 클릭","Bing 点击"], m_bing_impr:["Bing impressions","Bing 노출","Bing 展示"],
+ src_ga:["Google Analytics","Google 애널리틱스","Google Analytics"], src_gsc:["Search Console","Search Console","Search Console"], src_ads:["AdSense","애드센스","AdSense"], src_bing:["Bing Webmaster","Bing 웹마스터","Bing Webmaster"],
+ src_gscSitemaps:["Search Console sitemaps","Search Console 사이트맵","Search Console 站点地图"],
+ // compare
+ compare_title:["Compare sites","사이트 비교","网站对比"], compare_sub:["One metric across all sites over time.","하나의 지표를 사이트별로 시간에 따라 비교합니다.","同一指标在各网站之间随时间对比。"],
+ metric:["Metric","지표","指标"], range:["Range","기간","时间范围"], d7:["7 days","7일","7 天"], d28:["28 days","28일","28 天"], d90:["90 days","90일","90 天"],
+ no_data:["No data yet. Run a check first.","아직 데이터가 없습니다. 먼저 확인을 실행하세요.","还没有数据，请先运行检查。"],
+ table_view:["Table view","표로 보기","表格视图"], date:["Date","날짜","日期"],
+ // site detail
+ back:["← All sites","← 전체 사이트","← 所有网站"], site_checks:["Health checks","상태 점검","健康检查"],
+ http:["Homepage","홈페이지","首页"], ssl_exp:["SSL certificate","SSL 인증서","SSL 证书"], domain_exp:["Domain registration","도메인 등록","域名注册"], robots:["robots.txt","robots.txt","robots.txt"], sitemap:["Sitemap","사이트맵","站点地图"], adstxt:["ads.txt","ads.txt","ads.txt"], ads_site:["AdSense site","애드센스 사이트","AdSense 网站"],
+ expires_in:["expires in {n} days ({d})","{n}일 후 만료 ({d})","{n} 天后到期（{d}）"], urls:["{n} URLs","URL {n}개","{n} 个网址"], blocks_all:["Blocks all crawlers!","모든 크롤러 차단!","屏蔽了所有爬虫！"],
+ not_checked:["Not checked","확인 안 함","未检查"], unavailable:["Unavailable for this domain","이 도메인은 조회 불가","此域名无法查询"],
+ gsc_sitemaps:["Sitemaps in Search Console","Search Console 사이트맵","Search Console 中的站点地图"], submitted:["Submitted","제출","已提交"], last_read:["Last read","마지막 읽음","上次读取"], errors:["Errors","오류","错误"], warnings:["Warnings","경고","警告"],
+ inspections:["Key page indexing","주요 페이지 색인","重要页面收录"], verdict:["Result","결과","结果"], coverage:["Coverage","적용 범위","覆盖情况"], last_crawl:["Last crawl","마지막 크롤링","上次抓取"],
+ trend:["Trend","추이","趋势"], open_site:["Open site","사이트 열기","打开网站"],
+ cmp_intro:["How your sites are doing, side by side, compared with the period before.","사이트별 성적을 나란히, 이전 기간과 비교해 보여 줍니다.","各网站表现并排对比，并和上一个周期比较。"],
+ cmp_period:["Compare the last","비교 기간: 최근","对比最近"],
+ cmp_window:["{a} – {b} (last {n} days with data) vs the {n} days before","{a} – {b} (데이터가 있는 최근 {n}일) vs 그 전 {n}일","{a} – {b}（有数据的最近 {n} 天）对比之前 {n} 天"],
+ cmp_board:["Scoreboard","성적표","成绩单"], cmp_board_sub:["▲ green = better than the previous period, ▼ red = worse. The bar shows which site is bigger.","▲ 초록 = 이전 기간보다 좋아짐, ▼ 빨강 = 나빠짐. 막대는 사이트끼리 크기를 비교합니다.","▲ 绿色 = 比上个周期好，▼ 红色 = 变差。长条比较各网站的大小。"],
+ cmp_note:["Search Console data arrives 2–3 days late, so its period ends earlier. AdSense and Bing are per domain.","Search Console 데이터는 2–3일 늦게 들어와서 기간이 조금 앞당겨집니다. 애드센스와 Bing은 도메인 단위입니다.","Search Console 数据晚 2–3 天，所以它的期间会往前一些。AdSense 和 Bing 按域名统计。"],
+ cmp_trend:["Day by day","일별 추이","每日走势"], total:["All sites","전체 합계","全部合计"],
+ g_traffic:["👥 Visitors","👥 방문자","👥 访客"], g_search:["🔍 Search","🔍 검색","🔍 搜索"], g_money:["💰 Revenue","💰 수익","💰 收入"], g_health:["🩺 Site health (latest check)","🩺 사이트 상태 (최근 확인)","🩺 网站健康（最近一次检查）"],
+ c_visitors:["Visitors per day","하루 방문자","每天访客"], h_visitors:["About how many people visit each day","하루에 대략 몇 명이 오는지","平均每天大约有多少人来"],
+ c_views:["Pages viewed","본 페이지 수","浏览页数"], h_views:["Total pages opened in the period","기간 동안 열린 페이지 합계","这段时间一共被打开多少页"],
+ c_gclicks:["Visits from Google","Google에서 온 방문","来自 Google 的点击"], h_gclicks:["Clicks from Google search results","Google 검색 결과에서 클릭한 횟수","从 Google 搜索结果点进来的次数"],
+ c_gimpr:["Seen on Google","Google에 노출","在 Google 上被看到"], h_gimpr:["Times your pages appeared in Google results","Google 검색 결과에 나타난 횟수","在 Google 搜索结果里出现的次数"],
+ c_ctr:["Click rate","클릭률","点击率"], h_ctr:["Of those who saw it, how many clicked","본 사람 중 클릭한 비율","看到的人里有多少点了进来"],
+ c_pos:["Google ranking","Google 순위","Google 排名"], h_pos:["Average position — smaller is better","평균 순위 — 작을수록 좋음","平均位置——越小越好"],
+ c_bclicks:["Visits from Bing","Bing에서 온 방문","来自 Bing 的点击"], h_bclicks:["Clicks from Bing search","Bing 검색에서 클릭한 횟수","从 Bing 搜索点进来的次数"],
+ c_earn:["AdSense earnings","애드센스 수익","AdSense 收入"], h_earn:["Estimated earnings in the period","기간 동안 예상 수익","这段时间的预估收入"],
+ c_rpm:["Earnings per 1,000 views","1,000뷰당 수익","每千次浏览收入"], h_rpm:["How much 1,000 page views earn (RPM)","페이지뷰 1,000회당 수익 (RPM)","每 1000 次浏览赚多少（RPM）"],
+ c_speed:["Speed","속도","速度"], h_speed:["Time to load the homepage HTML","홈페이지 HTML을 받는 시간","下载首页 HTML 的时间"],
+ c_ssl:["Security certificate","보안 인증서","安全证书"], h_ssl:["Days until the SSL certificate expires","SSL 인증서 만료까지 남은 일수","SSL 证书还剩几天到期"],
+ c_index:["Pages in Google","Google 색인","被 Google 收录"], h_index:["Key pages indexed / checked","색인된 주요 페이지 / 확인한 수","已收录的重要页面 / 检查数"],
+ c_adstxt:["ads.txt","ads.txt","ads.txt"], h_adstxt:["Needed for AdSense to pay","애드센스 수익에 필요","AdSense 收入需要"],
+ best:["Top","최고","最高"], best_low:["Best","최고","最好"], same:["No change","변화 없음","持平"], no_prev:["No earlier data","이전 데이터 없음","没有之前的数据"],
+ pos_up:["up {n}","{n}계단 상승","上升 {n}"], pos_down:["down {n}","{n}계단 하락","下降 {n}"], not_connected:["Not connected","연결 안 됨","未连接"],
+ h_good:["All good","정상","正常"], h_warn:["{n} to check","확인 필요 {n}","需要注意 {n}"], h_bad:["{n} problems","문제 {n}","有问题 {n}"], h_unknown:["Not checked yet","아직 확인 안 함","还没检查"],
+ src_check:["Site check","사이트 점검","网站检查"], scope_account:["Whole account","계정 전체","整个账号"],
+ how_fix:["What to do:","처리 방법:","怎么处理："], ignore:["Ignore","무시","忽略"], unignore:["Show again","다시 표시","恢复提醒"],
+ ignored_n:["{n} ignored.","무시한 알림 {n}개.","已忽略 {n} 条。"], show_ignored:["Show","보기","显示"], hide_ignored:["Hide","숨기기","隐藏"],
+ open_in_app:["Open","열기","打开"], open_page:["Open page","페이지 열기","打开页面"],
+ fix_site_down:["Open the site yourself. If it really is down, contact your hosting provider and check that the hosting and domain bills are paid.","직접 사이트를 열어 보세요. 정말 안 열리면 호스팅 업체에 문의하고 호스팅·도메인 요금이 결제됐는지 확인하세요.","自己打开网站看看。如果真的打不开，联系主机商，并确认主机和域名费用没有过期。"],
+ fix_site_slow:["One slow check can be a fluke. If it stays slow for days, look at hosting load, page caching or a CDN.","한 번 느린 건 일시적일 수 있습니다. 며칠 계속 느리면 호스팅 부하, 페이지 캐시, CDN을 확인하세요.","偶尔一次慢可能是偶然。连续几天都慢，就检查主机负载、页面缓存或 CDN。"],
+ fix_noindex:["Remove the noindex robots tag from the homepage (often an SEO plugin or a 'discourage search engines' setting).","홈페이지의 noindex 태그를 지우세요 (SEO 플러그인이나 ‘검색엔진 차단’ 설정인 경우가 많음).","删除首页的 noindex 标签（通常是 SEO 插件或“阻止搜索引擎”设置）。"],
+ fix_adsense_code:["Put the AdSense code back on every page — a theme or plugin update may have removed it.","모든 페이지에 애드센스 코드를 다시 넣으세요. 테마·플러그인 업데이트로 빠졌을 수 있습니다.","把 AdSense 代码加回每个页面，可能是主题或插件更新时被去掉了。"],
+ fix_ssl:["Renew the SSL certificate at your hosting provider. Let's Encrypt renews automatically — check that auto-renew is working.","호스팅에서 SSL 인증서를 갱신하세요. Let's Encrypt는 자동 갱신되니 자동 갱신이 동작하는지 확인하세요.","在主机商那里续期 SSL 证书。Let's Encrypt 会自动续期，确认自动续期在正常工作。"],
+ fix_robots_block:["Edit robots.txt and remove “Disallow: /” so search engines can crawl the site.","robots.txt에서 “Disallow: /”를 지워 검색엔진이 사이트를 읽을 수 있게 하세요.","修改 robots.txt，删除“Disallow: /”，让搜索引擎能抓取网站。"],
+ fix_robots_missing:["Add a robots.txt at the site root with a “Sitemap:” line (optional but recommended).","사이트 루트에 “Sitemap:” 줄이 있는 robots.txt를 추가하세요 (선택, 권장).","在网站根目录加一个带“Sitemap:”行的 robots.txt（可选，建议）。"],
+ fix_sitemap:["Create a sitemap (most CMS or SEO plugins can) and submit it in Search Console → Sitemaps.","사이트맵을 만들고 (대부분 CMS·SEO 플러그인이 지원) Search Console → Sitemaps에 제출하세요.","生成站点地图（多数 CMS / SEO 插件都能做），并在 Search Console → 站点地图 提交。"],
+ fix_adstxt:["Put a file at /ads.txt containing: google.com, {pubId}, DIRECT, f08c47fec0942fa0 — AdSense → Sites shows the exact line.","/ads.txt 파일에 google.com, {pubId}, DIRECT, f08c47fec0942fa0 를 넣으세요. 애드센스 → 사이트에서 정확한 줄을 볼 수 있습니다.","在 /ads.txt 里写：google.com, {pubId}, DIRECT, f08c47fec0942fa0（AdSense → 网站 里有准确的内容）。"],
+ fix_domain:["Renew the domain at your registrar and turn on auto-renew.","도메인 등록 업체에서 갱신하고 자동 갱신을 켜 두세요.","在域名注册商续费，并打开自动续费。"],
+ fix_gsc_sitemap:["Open Sitemaps in Search Console to see which entries fail, fix them and resubmit.","Search Console의 Sitemaps에서 어떤 항목이 오류인지 보고 고친 뒤 다시 제출하세요.","在 Search Console 的站点地图里看哪些条目出错，改好后重新提交。"],
+ fix_not_indexed:["In Search Console URL inspection click “Request indexing”. New pages often take days to weeks.","Search Console URL 검사에서 ‘색인 생성 요청’을 누르세요. 새 페이지는 며칠~몇 주 걸리기도 합니다.","在 Search Console 网址检查里点“请求编入索引”。新页面通常要几天到几周。"],
+ fix_redirect:["Nothing to fix: this address redirects to another page and Google indexes that page instead. From now on the app checks the page it redirects to.","고칠 필요 없습니다. 이 주소는 다른 페이지로 이동하고, Google은 이동한 페이지를 색인합니다. 앞으로는 이동한 페이지를 확인합니다.","不用处理：这个网址会跳转到别的页面，Google 收录的是跳转后的页面。以后程序会改为检查跳转后的页面。"],
+ fix_ads_GETTING_READY:["Nothing to do: AdSense is reviewing the site. It usually takes a few days to a few weeks — keep the site online and keep publishing.","할 일 없음: 애드센스가 사이트를 검토 중입니다. 보통 며칠~몇 주 걸리니 사이트를 정상 운영하고 글을 계속 올리세요.","不用处理：AdSense 正在审核网站，一般要几天到几周。保持网站正常、继续更新内容就行。"],
+ fix_ads_REQUIRES_REVIEW:["In AdSense → Sites, click “Request review” for this site.","애드센스 → 사이트에서 이 사이트의 ‘검토 요청’을 누르세요.","在 AdSense → 网站 里为这个网站点“请求审核”。"],
+ fix_ads_NEEDS_ATTENTION:["Open AdSense → Sites to see what needs fixing, fix it and request review again.","애드센스 → 사이트에서 무엇을 고쳐야 하는지 확인하고 고친 뒤 다시 검토 요청하세요.","打开 AdSense → 网站 看需要修什么，改好后重新申请审核。"],
+ fix_ads_NOT_ADDED:["Add this site in AdSense → Sites, or ignore this if you don't plan to show ads here.","애드센스 → 사이트에 추가하거나, 광고를 넣지 않을 거라면 무시하세요.","在 AdSense → 网站 里添加它；如果不打算放广告，可以忽略。"],
+ fix_ads_other:["Open AdSense → Sites for details.","애드센스 → 사이트에서 자세히 확인하세요.","到 AdSense → 网站 查看详情。"],
+ fix_ads_alert:["This is a notice AdSense sends to your whole account, not about one site. Read it in AdSense; if it doesn't apply to your content, click Ignore.","애드센스가 계정 전체에 보내는 공지로, 특정 사이트 문제가 아닙니다. 애드센스에서 읽어 보고 해당 없으면 ‘무시’를 누르세요.","这是 AdSense 发给整个账号的通知，不是某个网站的问题。到 AdSense 看一下，和你的内容无关就点“忽略”。"],
+ fix_ads_account:["Open AdSense home to see what the account needs (e.g. address, payment or identity verification).","애드센스 홈에서 계정에 필요한 작업(주소·결제·본인 확인 등)을 확인하세요.","打开 AdSense 首页看账号需要做什么（如地址、付款或身份验证）。"],
+ fix_ads_policy:["Open AdSense → Policy center, fix the listed page, then request a review.","애드센스 → 정책 센터에서 해당 페이지를 고친 뒤 검토를 요청하세요.","打开 AdSense → 政策中心，修改列出的页面，然后申请审核。"],
+ fix_auth_google:["Go to Settings and click “Sign in with Google” again.","설정에서 ‘Google로 로그인’을 다시 누르세요.","到设置里重新点“使用 Google 登录”。"],
+ fix_auth_bing:["Generate a new key in Bing Webmaster Tools → Settings → API access and save it in Settings.","Bing 웹마스터 도구 → 설정 → API 액세스에서 새 키를 만들어 설정에 저장하세요.","在 Bing Webmaster Tools → 设置 → API 访问 生成新密钥，填到设置里。"],
+ fix_metric_drop:["Open the site page and look at the chart. One-day dips happen (holidays, Google updates); if it lasts, check the other alerts for site problems.","사이트 페이지에서 차트를 보세요. 하루 하락은 흔합니다 (휴일, Google 업데이트). 계속되면 다른 알림에서 사이트 문제를 확인하세요.","打开网站页面看图表。一天的下降很常见（节假日、Google 更新）；如果持续，看看其他提醒里有没有网站问题。"],
+ fix_metric_rise:["Good news — see which keywords drove it on the Keywords page.","좋은 소식입니다. 키워드 페이지에서 어떤 검색어 덕분인지 확인하세요.","好消息——到关键词页面看看是哪些搜索词带来的。"],
+ fix_source_error_bing:["Check that the Bing API key in Settings is correct and that this site is added in Bing Webmaster Tools.","설정의 Bing API 키가 맞는지, 이 사이트가 Bing 웹마스터 도구에 추가돼 있는지 확인하세요.","检查设置里的 Bing API 密钥是否正确，以及这个网站是否已添加到 Bing Webmaster Tools。"],
+ fix_source_error:["Check the connection in Settings. “Permission denied” means this Google account has no access to that property.","설정에서 연결을 확인하세요. ‘권한 없음’이면 이 Google 계정에 해당 속성 권한이 없는 것입니다.","到设置里检查连接。如果提示没有权限，说明这个 Google 账号没有该资源的访问权。"],
+ nav_audit:["AdSense check","애드센스 점검","AdSense 审核清单"],
+ au_intro:["Checks what AdSense reviewers usually look at. Green items are fine; fix the red ones first. This is a guide — Google makes the final decision.","애드센스 심사에서 흔히 보는 항목을 점검합니다. 빨간 항목부터 고치세요. 참고용이며 최종 판단은 Google이 합니다.","检查 AdSense 审核通常会看的项目。先改红色的项目。这只是参考，最终由 Google 决定。"],
+ au_run:["Run check","점검 시작","开始检查"], au_rerun:["Check again","다시 점검","重新检查"], au_running:["Checking pages… (up to a minute)","페이지 점검 중… (최대 1분)","正在检查页面…（最多一分钟）"],
+ au_never:["Not checked yet. Click “Run check”.","아직 점검하지 않았습니다. ‘점검 시작’을 누르세요.","还没有检查过，点“开始检查”。"],
+ au_verdict_good:["Looks ready","준비된 것 같습니다","看起来已经准备好了"], au_verdict_warn:["Almost there","거의 다 됐습니다","差不多了"], au_verdict_bad:["Fix these before review","심사 전에 고쳐야 할 항목이 있습니다","审核前需要先修改"],
+ au_summary:["{f} to fix, {w} to improve","고칠 항목 {f}개, 개선할 항목 {w}개","需要修改 {f} 项，建议改进 {w} 项"],
+ au_note:["Word counts skip header, menu and footer. Chinese/Japanese characters count as half a word.","단어 수는 헤더·메뉴·푸터를 빼고 셉니다. 중국어·일본어 글자는 반 단어로 셉니다.","字数不算页头、菜单和页脚。中文 / 日文每个字算半个词。"],
+ aus_ok:["OK","통과","通过"], aus_warn:["Improve","개선 권장","建议改进"], aus_fail:["Fix","수정 필요","需要修改"], aus_skip:["Not checked","확인 못 함","未检查"],
+ ag_basic:["Basics","기본","基本"], ag_pages:["Required pages","필수 페이지","必备页面"], ag_content:["Content","콘텐츠","内容"], ag_ads:["AdSense setup","애드센스 설정","AdSense 设置"],
+ au_n_pages:["{n} pages","{n}개 페이지","{n} 个页面"], au_no_https:["not HTTPS","HTTPS 아님","不是 HTTPS"], au_broken:["page is broken","페이지 오류","页面打不开"], au_words:["{n} words","{n}단어","{n} 词"], au_not_found:["No link found on the homepage","홈페이지에서 링크를 찾지 못했습니다","首页上没找到链接"],
+ au_count:["{n} pages in the sitemap","사이트맵에 페이지 {n}개","站点地图里有 {n} 个页面"], au_avg_words:["Average {n} words ({c} newest pages checked)","평균 {n}단어 (최신 {c}개 페이지 확인)","平均 {n} 词（检查了最新 {c} 个页面）"], au_thin_n:["{n} pages under {min} words","{min}단어 미만 {n}개","{n} 个页面少于 {min} 词"],
+ au_checked:["{n} pages opened without errors","{n}개 페이지 정상","{n} 个页面都能正常打开"], au_links:["{n} internal links on the homepage","홈페이지 내부 링크 {n}개","首页有 {n} 个站内链接"],
+ au_reachable:["Site opens (HTTPS)","사이트 접속 (HTTPS)","网站能打开（HTTPS）"], au_indexable:["Search engines may index it","검색엔진 색인 허용","允许搜索引擎收录"], au_mobile:["Mobile friendly (viewport)","모바일 대응 (viewport)","适配手机（viewport）"], au_navigation:["Clear navigation menu","명확한 메뉴","清楚的导航菜单"], au_lang:["Page language set","페이지 언어 지정","设置了页面语言"], au_meta:["Homepage title and description","홈페이지 제목·설명","首页标题和描述"],
+ au_page_privacy:["Privacy policy page","개인정보처리방침 페이지","隐私政策页面"], au_page_about:["About page","소개 페이지","关于页面"], au_page_contact:["Contact page","문의 페이지","联系页面"], au_page_terms:["Terms page (optional)","이용약관 페이지 (선택)","条款页面（可选）"],
+ au_content_count:["Enough articles","충분한 글 수","文章数量足够"], au_thin_content:["Articles have enough text","글 내용이 충분함","文章内容足够"], au_placeholder:["No placeholder pages","미완성 페이지 없음","没有未完成的页面"], au_sample_broken:["Pages open without errors","페이지 오류 없음","页面没有错误"], au_dup_titles:["Unique page titles","제목 중복 없음","页面标题不重复"],
+ au_adsense_code:["AdSense code on the site","사이트에 애드센스 코드","网站上有 AdSense 代码"], au_adstxt:["ads.txt is correct","ads.txt 정상","ads.txt 正确"], au_indexed:["Homepage is in Google","홈페이지가 Google에 색인됨","首页已被 Google 收录"],
+ auf_reachable:["Make sure the site opens and uses HTTPS (most hosts offer free Let's Encrypt certificates).","사이트가 열리고 HTTPS를 쓰는지 확인하세요 (대부분 호스팅에서 무료 Let's Encrypt 제공).","确认网站能打开并使用 HTTPS（大多数主机都提供免费的 Let's Encrypt 证书）。"],
+ auf_indexable:["Remove the noindex tag or the “Disallow: /” rule — AdSense cannot review a site search engines are told to skip.","noindex 태그나 “Disallow: /” 규칙을 지우세요. 검색엔진을 막은 사이트는 심사할 수 없습니다.","删除 noindex 标签或“Disallow: /”规则，屏蔽搜索引擎的网站无法审核。"],
+ auf_mobile:["Add <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> and check the site on a phone.","<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">을 넣고 휴대폰에서 확인하세요.","加上 <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">，并用手机看看效果。"],
+ auf_navigation:["Add a menu that links to your main categories and key pages so visitors (and reviewers) can find content.","주요 카테고리와 페이지로 가는 메뉴를 만드세요. 방문자와 심사자가 글을 찾기 쉬워야 합니다.","加一个导航菜单，链接到主要分类和重要页面，方便访客和审核人员找到内容。"],
+ auf_lang:["Add lang to the <html> tag, e.g. <html lang=\"ko\">. AdSense must support the site's language.","<html lang=\"ko\">처럼 언어를 지정하세요. 애드센스가 지원하는 언어여야 합니다.","在 <html> 标签上写语言，如 <html lang=\"ko\">。网站语言需要是 AdSense 支持的语言。"],
+ auf_meta:["Give the homepage a clear <title> and a meta description.","홈페이지에 명확한 <title>과 meta description을 넣으세요.","给首页加上清楚的 <title> 和 meta description。"],
+ auf_page_privacy:["Add a privacy policy page linked from every page (footer). It must mention cookies and Google ads.","모든 페이지(푸터)에서 연결되는 개인정보처리방침을 만드세요. 쿠키와 Google 광고 내용이 들어가야 합니다.","加一个隐私政策页面，并在每页页脚链接。里面要提到 Cookie 和 Google 广告。"],
+ auf_page_about:["Add an About page that says who runs the site and what it is for.","누가 어떤 목적으로 운영하는 사이트인지 설명하는 소개 페이지를 만드세요.","加一个“关于”页面，说明谁在运营、网站是做什么的。"],
+ auf_page_contact:["Add a contact page (an email address or a form) linked from the menu or footer.","메뉴나 푸터에서 연결되는 문의 페이지(이메일 또는 문의 양식)를 만드세요.","加一个联系页面（邮箱或表单），并在菜单或页脚链接。"],
+ auf_page_terms:["Optional, but a terms of use page makes the site look complete.","선택 사항이지만 이용약관이 있으면 사이트가 더 완성돼 보입니다.","可选，但有使用条款页面会让网站看起来更完整。"],
+ auf_content_count:["Publish more original articles. Many sites are approved with about 20–30 useful posts.","직접 쓴 글을 더 올리세요. 보통 유용한 글 20–30개 정도에서 승인되는 경우가 많습니다.","多发一些原创文章。很多网站在有 20–30 篇有用文章时通过审核。"],
+ auf_thin_content:["Expand short pages to at least {min} words of your own text, or merge / remove them. “Low value content” is the most common rejection reason.","짧은 페이지는 직접 쓴 내용을 {min}단어 이상으로 늘리거나 합치거나 지우세요. ‘가치 없는 콘텐츠’가 가장 흔한 거절 사유입니다.","把短页面扩充到至少 {min} 词的原创内容，或合并、删除。“价值不高的内容”是最常见的拒绝原因。"],
+ auf_placeholder:["Finish or remove pages with placeholder text (e.g. “coming soon”, “준비 중”, sample pages).","‘준비 중’, ‘coming soon’, 예시 페이지 같은 미완성 페이지는 완성하거나 지우세요.","把带有“即将推出”“建设中”或示例内容的页面写完或删除。"],
+ auf_sample_broken:["Fix or remove the pages that return errors, and update the sitemap.","오류 나는 페이지를 고치거나 지우고 사이트맵을 갱신하세요.","修复或删除打不开的页面，并更新站点地图。"],
+ auf_dup_titles:["Give every page its own title — duplicates look like copied or auto-generated content.","페이지마다 다른 제목을 쓰세요. 중복 제목은 복사·자동 생성 콘텐츠처럼 보입니다.","每个页面用不同的标题，重复标题看起来像复制或自动生成的内容。"],
+ auf_adsense_code:["Paste the AdSense code from AdSense → Sites into the <head> of every page.","애드센스 → 사이트의 코드를 모든 페이지 <head>에 넣으세요.","把 AdSense → 网站 里的代码放进每个页面的 <head>。"],
+ auf_adstxt:["Create /ads.txt at the domain root with: google.com, {pubId}, DIRECT, f08c47fec0942fa0","도메인 루트에 /ads.txt를 만들고 google.com, {pubId}, DIRECT, f08c47fec0942fa0 를 넣으세요.","在域名根目录建 /ads.txt，内容：google.com, {pubId}, DIRECT, f08c47fec0942fa0"],
+ auf_indexed:["Submit the sitemap and request indexing for the homepage in Search Console.","Search Console에서 사이트맵을 제출하고 홈페이지 색인을 요청하세요.","在 Search Console 提交站点地图，并为首页请求编入索引。"],
+ nav_pages:["Pages","페이지","页面"], pg_tab_index:["Indexing","색인","收录跟踪"], pg_tab_top:["Top pages","인기 페이지","热门页面"], pg_tab_links:["Broken links","깨진 링크","断链检查"],
+ pg_total:["Pages in sitemap","사이트맵 페이지","站点地图页面"], pg_indexed:["In Google","Google 색인","已被 Google 收录"], pg_checked:["{n} checked so far","지금까지 {n}개 확인","已检查 {n} 个"], pg_new:["New (14 days)","새 페이지 (14일)","新页面（14 天）"], pg_slow:["New, not indexed after 7 days","7일 지나도 미색인","超过 7 天仍未收录"],
+ pg_index_help:["Every day the app checks up to 40 pages that are not in Google yet (newest first) and re-checks 10 indexed ones. Large sites fill in over a few days.","매일 아직 색인되지 않은 페이지를 최대 40개(최신순), 색인된 페이지 10개를 다시 확인합니다. 큰 사이트는 며칠에 걸쳐 채워집니다.","每天检查最多 40 个还没收录的页面（最新的优先），并复查 10 个已收录页面。页面多的网站要几天才能全部检查完。"],
+ pg_refresh:["Check now","지금 확인","立即检查"], pg_none:["No pages yet — run a check first.","아직 페이지가 없습니다. 먼저 확인을 실행하세요.","还没有页面，请先运行检查。"],
+ pgf_all:["All","전체","全部"], pgf_new:["New","새 페이지","新页面"], pgf_notindexed:["Not indexed","미색인","未收录"], pgf_indexed:["Indexed","색인됨","已收录"],
+ pg_seen:["Found","발견","发现日期"], pg_days:["{n} days ago","{n}일 전","{n} 天前"], pg_request:["Request indexing","색인 요청","请求收录"],
+ pgs_indexed:["Indexed","색인됨","已收录"], pgs_notindexed:["Not indexed","미색인","未收录"], pgs_unchecked:["Not checked yet","확인 전","还没检查"], pgs_removed:["Removed from sitemap","사이트맵에서 제거됨","已从站点地图移除"],
+ in_title:["IndexNow (Bing and others)","IndexNow (Bing 등)","IndexNow（Bing 等）"],
+ gs_title:["Google Search Console","Google Search Console","Google Search Console"],
+ gs_help:["Google has no API for requesting indexing of ordinary pages. What Site Pulse can do: resubmit your sitemaps so Google reads them again right away, and open Search Console for a page with its address copied.","Google은 일반 페이지의 색인 요청 API를 제공하지 않습니다. 대신 Site Pulse가 사이트맵을 다시 제출해 Google이 바로 다시 읽게 하고, 페이지별로 주소를 복사한 채 Search Console을 열어 줍니다.","Google 不提供普通页面的“请求编入索引”API。Site Pulse 能做的是：重新提交站点地图让 Google 马上重新读取，以及复制页面地址并打开 Search Console。"],
+ gs_auto:["When new pages appear, sitemaps are resubmitted automatically during the daily check (once a day).","새 페이지가 생기면 매일 확인할 때 사이트맵을 자동으로 다시 제출합니다(하루 1회).","出现新页面时，每天检查时会自动重新提交站点地图（每天一次）。"],
+ gs_last:["Last resubmitted: {d}","마지막 제출: {d}","上次提交：{d}"],
+ gs_submit:["Resubmit sitemaps now","지금 사이트맵 다시 제출","立即重新提交站点地图"],
+ gs_submitted:["Resubmitted {n} sitemap(s) to Google","Google에 사이트맵 {n}개를 다시 제출했습니다","已向 Google 重新提交 {n} 个站点地图"],
+ gs_need_scope:["Resubmitting sitemaps needs permission to manage Search Console. Sign in to Google again once and allow it (everything else stays read-only).","사이트맵 제출에는 Search Console 관리 권한이 필요합니다. Google에 한 번 다시 로그인해 허용해 주세요(나머지는 계속 읽기 전용).","重新提交站点地图需要 Search Console 管理权限。请重新登录 Google 一次并允许（其他功能仍只读）。"],
+ gs_reconnect:["Sign in to Google again","Google 다시 로그인","重新登录 Google"],
+ gs_copied:["Address copied. In Search Console paste it into the search box at the top, press Enter, then click “Request indexing”.","주소를 복사했습니다. Search Console 위쪽 검색창에 붙여넣고 Enter → ‘색인 생성 요청’을 누르세요.","已复制地址。在 Search Console 顶部搜索框粘贴并回车，然后点“请求编入索引”。"],
+ gs_copy_all:["Copy not-indexed addresses","미색인 주소 모두 복사","复制所有未收录地址"],
+ gs_copied_all:["Copied {n} addresses","{n}개 주소를 복사했습니다","已复制 {n} 个地址"],
+ in_help:["IndexNow tells Bing, Naver, Yandex and Seznam about new pages right away — often indexed the same day. Google does not use it; for Google use “Request indexing”.","IndexNow는 새 페이지를 Bing·네이버·Yandex·Seznam에 바로 알려 줍니다 (보통 당일 색인). Google은 사용하지 않으니 Google은 ‘색인 요청’을 쓰세요.","IndexNow 会马上把新页面通知 Bing、Naver、Yandex、Seznam，通常当天就收录。Google 不用它，Google 请用“请求收录”。"],
+ in_setup:["Set up IndexNow","IndexNow 설정","设置 IndexNow"], in_step1:["Download the key file:","키 파일 다운로드:","下载密钥文件："], in_download:["Download {f}","{f} 다운로드","下载 {f}"],
+ in_step2:["Upload it to the site root so this address opens it:","사이트 루트에 올려서 이 주소에서 열리게 하세요:","上传到网站根目录，让这个地址能打开它："], in_step3:["Click “Check again”.","‘다시 확인’을 누르세요.","点“重新检查”。"],
+ in_not_verified:["Key file not found on the site yet","사이트에서 키 파일을 아직 찾지 못했습니다","网站上还没找到密钥文件"], in_verify:["Check again","다시 확인","重新检查"], in_verified:["IndexNow is active","IndexNow 사용 중","IndexNow 已启用"],
+ in_auto:["New pages are submitted automatically during the daily check.","새 페이지는 매일 확인할 때 자동으로 제출됩니다.","新页面会在每天检查时自动提交。"], in_submit_all:["Submit all not-indexed pages now","미색인 페이지 지금 모두 제출","立即提交所有未收录页面"], in_submitted:["Submitted {n} pages","{n}개 페이지 제출","已提交 {n} 个页面"],
+ a_new_not_indexed:["{n} new pages are still not in Google after 7 days","새 페이지 {n}개가 7일이 지나도 Google에 색인되지 않았습니다","{n} 个新页面超过 7 天还没被 Google 收录"],
+ fix_new_not_indexed:["Open Pages → Indexing and click “Request indexing” for them. Also link to new posts from the homepage or related articles.","페이지 → 색인에서 ‘색인 요청’을 누르세요. 홈이나 관련 글에서 새 글로 링크도 걸어 주세요.","到 页面 → 收录跟踪 点“请求收录”。也在首页或相关文章里加上指向新文章的链接。"],
+ src_psi:["PageSpeed","PageSpeed","PageSpeed"], src_pages:["Sitemap","사이트맵","站点地图"],
+ lk_running:["Checking every page and link… (a few minutes)","모든 페이지와 링크 확인 중… (몇 분)","正在检查所有页面和链接…（几分钟）"],
+ lk_stats:["{p} pages, {n} links, {s} s","페이지 {p}개, 링크 {n}개, {s}초","{p} 个页面，{n} 个链接，{s} 秒"],
+ lk_help:["Opens every sitemap page and checks every link on them. Runs automatically once a week; up to 3,000 links.","사이트맵의 모든 페이지를 열고 그 안의 링크를 모두 확인합니다. 일주일에 한 번 자동 실행, 최대 3,000개.","打开站点地图里的每个页面，并检查页面上的所有链接。每周自动运行一次，最多 3000 个链接。"],
+ lk_none:["No problems in {n} links.","링크 {n}개 모두 문제없습니다.","{n} 个链接都没有问题。"],
+ lk_broken:["Broken pages and links on your site","내 사이트의 깨진 페이지·링크","站内打不开的页面和链接"], lk_broken_ext:["Broken links to other sites","다른 사이트로 가는 깨진 링크","指向其他网站的失效链接"],
+ lk_redirect_chain:["Redirect chains","여러 번 이동하는 링크","多次跳转的链接"], lk_slow:["Very slow pages (over 5 s)","매우 느린 페이지 (5초 이상)","很慢的页面（超过 5 秒）"],
+ lkh_broken:["Visitors and Google hit an error here. Fix the page, or update/remove the links on the pages listed on the right.","방문자와 Google이 오류를 만납니다. 페이지를 고치거나 오른쪽 페이지의 링크를 고치거나 지우세요.","访客和 Google 打开会出错。修好页面，或者修改 / 删除右边这些页面里的链接。"],
+ lkh_broken_ext:["The other site removed or moved the page. Update or remove these links.","상대 사이트가 페이지를 지웠거나 옮겼습니다. 링크를 고치거나 지우세요.","对方网站删除或移动了页面。更新或删除这些链接。"],
+ lkh_redirect_chain:["The link redirects 2+ times before arriving. Link straight to the final address (→).","도착까지 2번 이상 이동합니다. 최종 주소(→)로 바로 링크하세요.","链接跳转了 2 次以上才到达。直接链接到最终地址（→）。"],
+ lkh_slow:["These took over 5 seconds to load. Check large images or slow plugins on them.","5초 넘게 걸렸습니다. 큰 이미지나 느린 플러그인을 확인하세요.","这些页面加载超过 5 秒。检查大图片或慢插件。"],
+ lk_found_on:["Linked from","링크가 있는 페이지","出现在这些页面"], lk_sitemap:["sitemap","사이트맵","站点地图"], lk_hops:["{n} redirects","{n}번 이동","跳转 {n} 次"],
+ lk_capped:["Stopped at the 3,000-link limit; the rest will be checked next time.","3,000개 한도에서 멈췄습니다. 나머지는 다음에 확인합니다.","达到 3000 个链接上限，剩下的下次再检查。"],
+ a_broken_links:["{n} broken pages or links on the site","사이트에 깨진 페이지·링크 {n}개","网站里有 {n} 个打不开的页面或链接"], a_broken_links_ext:["{n} links to other sites are broken","다른 사이트로 가는 깨진 링크 {n}개","{n} 个指向其他网站的链接失效"],
+ fix_broken_links:["Open Pages → Broken links to see where each one is linked from, then fix or remove it.","페이지 → 깨진 링크에서 어디에 걸려 있는지 보고 고치거나 지우세요.","到 页面 → 断链检查 看它们出现在哪里，然后修改或删除。"],
+ fix_broken_links_ext:["Not urgent: update or remove these outgoing links when you have time.","급하지 않습니다. 시간 날 때 바깥 링크를 고치거나 지우세요.","不急：有空时更新或删除这些外部链接。"],
+ tr_title:["Tracked keywords","추적 키워드","跟踪的关键词"], tr_help:["Your Google position for chosen searches, recorded every day. Click ☆ in the table below or type a search to add one.","선택한 검색어의 Google 순위를 매일 기록합니다. 아래 표의 ☆를 누르거나 검색어를 입력해 추가하세요.","每天记录所选搜索词在 Google 的排名。点下表里的 ☆，或输入搜索词添加。"],
+ tr_add_ph:["Type a search query, e.g. pdf to word","검색어 입력 예: pdf 변환","输入搜索词，例如 pdf 转 word"], tr_add:["Track","추적","跟踪"], tr_remove:["Stop tracking","추적 중지","取消跟踪"],
+ tr_none:["No tracked keywords yet.","추적 중인 키워드가 없습니다.","还没有跟踪的关键词。"], tr_pos:["Position now","현재 순위","现在排名"], tr_change:["vs last week","지난주 대비","比上周"], tr_clicks7:["Clicks (7 days)","클릭 (7일)","点击（7 天）"], tr_30d:["30 days","30일","30 天"],
+ tr_no_data:["No data — Google hasn't shown this query yet","데이터 없음 — 아직 노출되지 않음","没有数据——Google 还没展示过这个词"],
+ a_kw_drop:["“{query}” fell from position {prev} to {pos}","‘{query}’ 순위가 {prev}위에서 {pos}위로 하락","“{query}”排名从第 {prev} 名掉到第 {pos} 名"],
+ fix_kw_drop:["Search it yourself to see who now ranks above you. Update the article (fresher info, better title), and check it is still indexed.","직접 검색해서 누가 위로 올라왔는지 보세요. 글을 업데이트(최신 정보, 더 나은 제목)하고 색인 상태도 확인하세요.","自己搜一下，看看谁排到了你前面。更新文章（更新信息、改进标题），并确认它还被收录。"],
+ tp_s_views:["Most viewed","조회 많은 순","浏览最多"], tp_s_clicks:["Most Google clicks","Google 클릭 많은 순","Google 点击最多"], tp_s_up:["Rising","상승","上升最快"], tp_s_down:["Falling","하락","下降最多"],
+ tp_page:["Page","페이지","页面"], tp_none_move:["No pages moved in this direction.","이 방향으로 변한 페이지가 없습니다.","没有这个方向变化的页面。"],
+ tp_help:["Views: {a} – {b}. Google clicks: {c} – {d} (Search Console is 2–3 days behind). Change is vs the period before.","조회: {a} – {b}. Google 클릭: {c} – {d} (Search Console은 2–3일 늦음). 변화는 이전 기간 대비.","浏览：{a} – {b}。Google 点击：{c} – {d}（Search Console 晚 2–3 天）。变化是和上一个周期比较。"],
+ m_psi_m_score:["Mobile speed score","모바일 속도 점수","手机速度分数"], m_psi_d_score:["Desktop speed score","PC 속도 점수","电脑速度分数"], m_psi_m_lcp:["Mobile LCP (load)","모바일 LCP (로딩)","手机 LCP（加载）"], m_psi_d_lcp:["Desktop LCP","PC LCP","电脑 LCP"], m_psi_m_cls:["Mobile CLS","모바일 CLS","手机 CLS"], m_psi_m_tbt:["Mobile TBT","모바일 TBT","手机 TBT"],
+ m_http_ms:["Homepage response (total)","홈페이지 응답 (전체)","首页响应（总计）"], m_http_ttfb:["Server response (TTFB)","서버 응답 (TTFB)","服务器响应（TTFB）"],
+ sp_title:["Page speed","페이지 속도","页面速度"], sp_mobile:["Mobile","모바일","手机"], sp_desktop:["Desktop","PC","电脑"], sp_field:["Real visitors (28 days)","실제 방문자 (28일)","真实访客（28 天）"], sp_lab:["Lab test today","오늘 테스트","今天的测试"],
+ sp_lcp:["Main content shows","주요 내용 표시","主要内容显示"], sp_inp:["Reacts to taps/clicks","탭·클릭 반응","点击反应"], sp_cls:["Layout jumping","화면 밀림","页面跳动"],
+ sp_field_help:["Green = good, yellow = needs improvement, red = poor (Google's Core Web Vitals thresholds).","초록 = 좋음, 노랑 = 개선 필요, 빨강 = 나쁨 (Google Core Web Vitals 기준).","绿 = 好，黄 = 需要改进，红 = 差（Google Core Web Vitals 标准）。"],
+ sp_no_field:["Not enough real-visitor data from Chrome yet, so only the lab test is shown. Green = good, red = poor.","Chrome 실제 방문자 데이터가 아직 부족해 테스트 결과만 표시합니다. 초록 = 좋음, 빨강 = 나쁨.","Chrome 的真实访客数据还不够，所以只显示测试结果。绿 = 好，红 = 差。"],
+ sp_details:["Full report on PageSpeed Insights","PageSpeed Insights 전체 보고서","在 PageSpeed Insights 查看完整报告"],
+ sp_quota:["Google limited anonymous PageSpeed requests — add a free API key in Settings","Google이 익명 PageSpeed 요청을 제한했습니다 — 설정에 무료 API 키를 넣으세요","Google 限制了匿名 PageSpeed 请求——请在设置里加一个免费 API 密钥"],
+ s_psi:["5. PageSpeed (optional)","5. PageSpeed (선택)","5. PageSpeed（可选）"],
+ s_psi_help:["Page speed is checked once a day and works without a key, but Google sometimes limits anonymous use. If you see a quota message, create an API key in Google Cloud (APIs & Services → Credentials → Create credentials → API key, project site-monitor) and paste it here.","속도는 하루 한 번 확인하며 키 없이도 되지만 Google이 익명 사용을 제한할 때가 있습니다. 한도 메시지가 나오면 Google Cloud(API 및 서비스 → 사용자 인증 정보 → API 키, site-monitor 프로젝트)에서 키를 만들어 넣으세요.","每天检查一次速度，不填密钥也能用，但 Google 有时会限制匿名请求。如果看到额度提示，在 Google Cloud（API 和服务 → 凭据 → 创建凭据 → API 密钥，项目 site-monitor）建一个密钥填到这里。"],
+ a_psi_poor:["Mobile speed score is low: {score}/100","모바일 속도 점수가 낮습니다: {score}/100","手机速度分数偏低：{score}/100"], a_psi_drop:["Mobile speed score dropped from {prev} to {score}","모바일 속도 점수가 {prev}에서 {score}로 떨어졌습니다","手机速度分数从 {prev} 降到 {score}"],
+ fix_psi:["Open the PageSpeed report to see what slows it down — usually large images, too many scripts/ads or slow hosting. Compress images and lazy-load them.","PageSpeed 보고서에서 원인을 확인하세요. 보통 큰 이미지, 많은 스크립트·광고, 느린 호스팅입니다. 이미지를 압축하고 지연 로딩하세요.","打开 PageSpeed 报告看是什么拖慢的——通常是大图片、脚本 / 广告太多或主机慢。压缩图片并延迟加载。"],
+ tm_title:["Where the homepage time goes","홈페이지 응답 시간 분석","首页时间花在哪里"],
+ tm_dns:["DNS lookup","DNS 조회","DNS 查询"], tm_connect:["Connect","연결","建立连接"], tm_tls:["HTTPS handshake","HTTPS 핸드셰이크","HTTPS 握手"], tm_server:["Server","서버 처리","服务器处理"], tm_download:["Download","다운로드","下载"],
+ tm_total:["First visit {n} ms","첫 방문 {n} ms","首次访问 {n} 毫秒"], tm_warm:["second visit: server {t} ms, total {n} ms","두 번째 방문: 서버 {t} ms, 전체 {n} ms","第二次访问：服务器 {t} 毫秒，总计 {n} 毫秒"],
+ tm_main_net:["Mostly network:","대부분 네트워크:","主要是网络："], tm_main_server:["Mostly server:","대부분 서버:","主要是服务器："], tm_main_download:["Mostly download:","대부분 다운로드:","主要是下载："],
+ tm_hint_net:["the server is far from your visitors. A CDN (e.g. Cloudflare) or a host in Korea/Asia would help most.","서버가 방문자와 멀리 있습니다. CDN(예: Cloudflare)이나 한국·아시아 서버가 가장 효과적입니다.","服务器离访客太远。用 CDN（如 Cloudflare）或韩国 / 亚洲的主机效果最好。"],
+ tm_hint_server:["the server takes long to build the page. Turn on page caching (e.g. a cache plugin) or upgrade hosting.","서버가 페이지를 만드는 데 오래 걸립니다. 페이지 캐시(캐시 플러그인 등)를 켜거나 호스팅을 올리세요.","服务器生成页面太慢。开启页面缓存（如缓存插件）或升级主机。"],
+ tm_hint_download:["the HTML is large or the connection is slow. Enable compression (gzip/brotli) and trim the HTML.","HTML이 크거나 연결이 느립니다. 압축(gzip/brotli)을 켜고 HTML을 줄이세요.","HTML 太大或连接慢。开启压缩（gzip / brotli），精简 HTML。"],
+ nav_reports:["Reports","보고서","报告"], rp_intro:["A weekly summary is ready every Monday. Open it to read or print (choose “Save as PDF”), or download it as Excel.","매주 월요일 주간 요약이 준비됩니다. 열어서 보거나 인쇄(‘PDF로 저장’)하거나 Excel로 받으세요.","每周一会生成上周的总结。打开查看或打印（选“另存为 PDF”），也可以下载 Excel。"],
+ rp_latest:["Latest","최신","最新"], rp_open:["Open","열기","打开"], rp_excel:["Excel","Excel","Excel"], rp_print:["Print / Save as PDF","인쇄 / PDF로 저장","打印 / 另存为 PDF"], back_reports:["← All reports","← 전체 보고서","← 全部报告"],
+ rp_title:["Weekly report","주간 보고서","周报"], rp_vs_prev:["compared with the week before","전주 대비","与上一周比较"], rp_account:["Account notices","계정 공지","账号通知"], rp_this:["This week","이번 주","本周"], rp_last:["Last week","지난주","上周"],
+ rp_daily:["Day by day","일별","每日"], rp_alerts:["Alerts this week","이번 주 알림","本周提醒"], rp_days:["{n} days","{n}일","{n} 天"], rp_days_col:["Days","일수","天数"], rp_source:["Source","출처","来源"],
+ rp_h_index:["{i} of {n} pages in Google, {s} new pages slow to index","Google 색인 {i}/{n}, 색인 지연 새 페이지 {s}","Google 收录 {i}/{n}，收录慢的新页面 {s}"], rp_h_links:["{n} broken links","깨진 링크 {n}개","断链 {n} 个"], rp_h_speed:["mobile speed score {n}","모바일 속도 점수 {n}","手机速度分数 {n}"],
+ rp_generated:["Generated by Site Pulse {d}","Site Pulse 생성 {d}","Site Pulse 生成于 {d}"], rp_sheet_summary:["Summary","요약","汇总"], rp_sheet_daily:["Daily","일별","每日"],
+ src_report:["Site Pulse","Site Pulse","Site Pulse"], a_weekly_report:["Last week's report is ready ({a} – {b})","지난주 보고서가 준비됐습니다 ({a} – {b})","上周的周报已生成（{a} – {b}）"],
+ tm_fast:["Fast — nothing to do.","빠릅니다. 할 일 없음.","很快，不用处理。"],
+ au_crit:["Criteria:","판정 기준:","判定标准："], au_via_sitemap:["found only in the sitemap, not linked from the homepage","사이트맵에만 있고 홈페이지에 링크가 없음","只在站点地图里找到，首页没有链接"],
+ au_col_group:["Group","분류","分组"], au_col_item:["Check","항목","项目"], au_col_result:["Result","결과","结果"], au_col_detail:["Details","상세","详情"],
+ au_disclaimer:["Google does not publish exact thresholds. Article count and word count use common rules of thumb; final approval is decided by Google.","Google은 정확한 기준을 공개하지 않습니다. 글 수·단어 수는 흔히 쓰는 경험치이며 최종 승인은 Google이 결정합니다.","Google 没有公开具体门槛。文章数和字数用的是常见的经验值，最终是否通过由 Google 决定。"],
+ auc_reachable:["Pass: the homepage (after any redirect) opens with HTTP 200 over HTTPS. Improve: opens but not HTTPS. Fix: does not open.","통과: 홈페이지(이동 후)가 HTTPS로 HTTP 200. 개선: 열리지만 HTTPS 아님. 수정: 열리지 않음.","通过：首页（跟随跳转后）用 HTTPS 正常打开（HTTP 200）。建议改进：能打开但不是 HTTPS。需要修改：打不开。"],
+ auc_indexable:["Pass: the landing page has no “noindex” tag and robots.txt does not contain “Disallow: /” for all crawlers.","통과: 첫 페이지에 noindex 태그가 없고 robots.txt에 모든 크롤러 대상 “Disallow: /”가 없음.","通过：首页没有 noindex 标签，robots.txt 里没有针对所有爬虫的“Disallow: /”。"],
+ auc_mobile:["Pass: the page has a <meta name=\"viewport\"> tag (needed for phones).","통과: <meta name=\"viewport\"> 태그가 있음 (휴대폰 표시에 필요).","通过：页面有 <meta name=\"viewport\"> 标签（手机显示需要）。"],
+ auc_navigation:["Pass: the page has a <nav> menu or at least 8 links to its own pages. Otherwise: improve.","통과: <nav> 메뉴가 있거나 내부 링크가 8개 이상. 아니면 개선 권장.","通过：页面有 <nav> 菜单，或至少 8 个站内链接；否则建议改进。"],
+ auc_lang:["Pass: the <html> tag has a lang attribute (e.g. lang=\"ko\").","통과: <html> 태그에 lang 속성이 있음 (예: lang=\"ko\").","通过：<html> 标签有 lang 属性（如 lang=\"ko\"）。"],
+ auc_meta:["Pass: the landing page has both a <title> and a meta description.","통과: 첫 페이지에 <title>과 meta description이 모두 있음.","通过：首页同时有 <title> 和 meta description。"],
+ auc_page_privacy:["Looks for a link on the homepage (after redirect) whose text or address contains privacy / 개인정보 / 隐私; if none, an address in the sitemap. Pass: linked from the homepage, opens, and has at least 80 words. Improve: too short, or only in the sitemap. Fix: not found or broken.","홈페이지(이동 후)에서 글자나 주소에 privacy / 개인정보 / 隐私가 들어간 링크를 찾고, 없으면 사이트맵 주소에서 찾습니다. 통과: 홈페이지에 링크가 있고 열리며 80단어 이상. 개선: 너무 짧거나 사이트맵에만 있음. 수정: 없거나 열리지 않음.","在首页（跟随跳转后）找文字或网址包含 privacy / 개인정보 / 隐私 的链接，找不到再看站点地图里的网址。通过：首页有链接、能打开、至少 80 词。建议改进：内容太短，或只在站点地图里。需要修改：找不到或打不开。"],
+ auc_page_about:["Same method with about / 소개 / 关于: linked from the homepage, opens, at least 80 words.","같은 방법으로 about / 소개 / 关于 를 찾습니다: 홈페이지 링크, 열림, 80단어 이상.","同样方法找 about / 소개 / 关于：首页有链接、能打开、至少 80 词。"],
+ auc_page_contact:["Same method with contact / 문의 / 联系: linked from the homepage, opens, at least 80 words (a form or email counts as content too).","같은 방법으로 contact / 문의 / 联系 를 찾습니다: 홈페이지 링크, 열림, 80단어 이상.","同样方法找 contact / 문의 / 联系：首页有链接、能打开、至少 80 词。"],
+ auc_page_terms:["Optional. Same method with terms / 이용약관 / 条款; missing only gives a suggestion.","선택 사항. terms / 이용약관 / 条款 로 찾으며 없으면 권장만 표시.","可选。用 terms / 이용약관 / 条款 查找，没有只给建议。"],
+ auc_content_count:["Counts pages in the sitemap (limited to the site's path). Pass: 25 or more. Improve: 10–24. Fix: under 10.","사이트맵의 페이지 수(사이트 경로 기준). 통과: 25개 이상. 개선: 10–24. 수정: 10개 미만.","统计站点地图里的页面数（按网站路径）。通过：25 个以上。建议改进：10–24 个。需要修改：少于 10 个。"],
+ auc_thin_content:["Opens the 25 newest articles (legal, listing and home pages excluded) and counts body words without header, menu and footer; Chinese/Japanese characters count as half a word. Short = under 300 words. Pass: none short. Improve: some short. Fix: more than 30% short.","최신 글 25개(법적 페이지·목록·홈 제외)를 열어 헤더·메뉴·푸터를 뺀 본문 단어를 셉니다. 300단어 미만이면 짧은 글. 통과: 없음. 개선: 일부. 수정: 30% 초과.","打开最新的 25 篇文章（不含法律页面、列表页和首页），统计去掉页头、菜单、页脚后的正文词数，中日文每字算半词。少于 300 词算短。通过：没有短文。建议改进：有一些。需要修改：超过 30%。"],
+ auc_placeholder:["Fix if the homepage or a checked article contains text like “coming soon”, “준비 중입니다”, “建设中”, “lorem ipsum” or sample-page text.","홈이나 확인한 글에 “coming soon”, “준비 중입니다”, “建设中”, “lorem ipsum”, 예시 페이지 문구가 있으면 수정 필요.","首页或检查的文章里有“coming soon”“준비 중입니다”“建设中”“lorem ipsum”或示例页面文字时，需要修改。"],
+ auc_sample_broken:["Fix if any checked article returns an error (4xx/5xx) or doesn't open.","확인한 글 중 오류(4xx/5xx)이거나 열리지 않는 것이 있으면 수정 필요.","检查的文章里有报错（4xx / 5xx）或打不开的，需要修改。"],
+ auc_dup_titles:["Improve if two or more checked articles share the same <title>.","확인한 글 중 2개 이상이 같은 <title>이면 개선 권장.","检查的文章里有两篇以上 <title> 相同时，建议改进。"],
+ auc_adsense_code:["Pass: the landing page HTML contains the AdSense script (adsbygoogle / pagead2.googlesyndication.com).","통과: 첫 페이지 HTML에 애드센스 스크립트(adsbygoogle / pagead2.googlesyndication.com)가 있음.","通过：首页 HTML 里有 AdSense 脚本（adsbygoogle / pagead2.googlesyndication.com）。"],
+ auc_adstxt:["Pass: /ads.txt at the domain root contains “google.com, <your pub ID>, DIRECT”.","통과: 도메인 루트의 /ads.txt에 “google.com, <내 pub ID>, DIRECT”가 있음.","通过：域名根目录的 /ads.txt 里有“google.com, <你的 pub ID>, DIRECT”。"],
+ auc_indexed:["Pass: Search Console URL inspection says the landing page is on Google.","통과: Search Console URL 검사에서 첫 페이지가 Google에 있음.","通过：Search Console 网址检查显示首页已在 Google 上。"],
+ replaced_window:["Site Pulse is open in another window. You can close this one.","Site Pulse가 다른 창에서 열렸습니다. 이 창은 닫아도 됩니다.","Site Pulse 已在另一个窗口打开，这个窗口可以关闭。"],
+ // keywords
+ kw_title:["Keywords","키워드","关键词"], kw_sub:["Search Console queries, compared with the previous period, plus Google Trends exports.","Search Console 검색어(이전 기간 대비)와 Google 트렌드 내보내기 데이터.","Search Console 搜索词（与上一周期对比）以及 Google Trends 导出数据。"],
+ site:["Site","사이트","网站"], load:["Load","불러오기","加载"], query:["Query","검색어","搜索词"], clicks:["Clicks","클릭","点击"], impressions:["Impressions","노출","展示"], ctr:["CTR","CTR","CTR"], position:["Position","순위","排名"], change:["Change","변화","变化"],
+ kw_pick:["Tick up to 5 queries to chart them by day.","최대 5개 검색어를 선택하면 일별 차트를 그립니다.","勾选最多 5 个搜索词，按天绘制图表。"],
+ kw_chart:["Selected queries by day","선택한 검색어 일별 추이","所选搜索词每日趋势"], new_q:["new","신규","新"],
+ no_gsc_sites:["No site has a Search Console property yet. Set one in Settings.","Search Console 속성이 지정된 사이트가 없습니다. 설정에서 지정하세요.","还没有网站设置 Search Console 资源，请在设置中选择。"],
+ trends_title:["Google Trends","Google 트렌드","Google Trends"],
+ trends_help:["On trends.google.com, open “Interest over time”, click the download (↓) button, then drop the CSV here. Same term + region updates the earlier import.","trends.google.com에서 ‘시간 흐름에 따른 관심도’의 다운로드(↓) 버튼으로 CSV를 받아 여기에 끌어다 놓으세요. 같은 검색어·지역은 기존 데이터를 갱신합니다.","在 trends.google.com 的“随时间变化的热度”点下载（↓），把 CSV 拖到这里。相同关键词和地区会更新之前的数据。"],
+ trends_note:["Google's official Trends API is still a limited alpha; when access is granted it can be added here.","Google 공식 Trends API는 아직 제한된 알파 버전입니다. 승인되면 여기에 연결할 수 있습니다.","Google 官方 Trends API 仍是受限 alpha，获批后可以接入这里。"],
+ drop_csv:["Drop Trends CSV here or click to choose","Trends CSV를 끌어다 놓거나 클릭해서 선택","把 Trends CSV 拖到这里，或点击选择"],
+ overlay:["Also show selected queries' clicks, indexed to 0–100","선택한 검색어 클릭도 0–100 지수로 함께 표시","同时显示所选搜索词点击（换算成 0–100 指数）"],
+ trends_none:["No Trends data imported yet.","가져온 트렌드 데이터가 없습니다.","还没有导入 Trends 数据。"], interest:["Interest (0–100)","관심도 (0–100)","热度（0–100）"],
+ imported:["Imported {n} series","{n}개 시리즈를 가져왔습니다","已导入 {n} 个系列"], del:["Delete","삭제","删除"],
+ // settings
+ s_client:["1. Google OAuth client","1. Google OAuth 클라이언트","1. Google OAuth 客户端"],
+ s_client_help:["Choose the JSON file downloaded when the “Desktop app” client was created in Google Cloud. It stays on this computer.","Google Cloud에서 ‘데스크톱 앱’ 클라이언트를 만들 때 받은 JSON 파일을 선택하세요. 파일 내용은 이 컴퓨터에만 저장됩니다.","选择在 Google Cloud 创建“桌面应用”客户端时下载的 JSON 文件。内容只保存在这台电脑上。"],
+ choose_json:["Choose JSON file…","JSON 파일 선택…","选择 JSON 文件…"], remove:["Remove","제거","移除"], client_set:["Client: {c}","클라이언트: {c}","客户端：{c}"],
+ s_account:["2. Google account","2. Google 계정","2. Google 账号"],
+ s_account_help:["Read-only access to Analytics, Search Console and AdSense. Google may show “Google hasn't verified this app” — choose Advanced → Continue; the app is yours.","애널리틱스, Search Console, 애드센스를 읽기 전용으로 가져옵니다. ‘Google에서 확인하지 않은 앱’이 보이면 고급 → 계속을 누르세요. 본인이 만든 앱입니다.","只读访问 Analytics、Search Console 和 AdSense。如果出现“Google 尚未验证此应用”，点“高级 → 继续”即可，这是你自己的应用。"],
+ sign_in:["Sign in with Google","Google로 로그인","使用 Google 登录"], sign_out:["Sign out","로그아웃","退出登录"], need_client:["Import the client JSON first.","먼저 클라이언트 JSON을 가져오세요.","请先导入客户端 JSON。"],
+ auth_ok:["Signed in.","로그인했습니다.","已登录。"], auth_fail:["Sign-in failed: {e}","로그인 실패: {e}","登录失败：{e}"],
+ s_sites:["3. Websites","3. 웹사이트","3. 网站"],
+ s_sites_help:["Pick each site's Search Console property, GA4 property and Bing site. “Auto-match” fills them from the URL. If the URL has a path (e.g. https://example.com/ko/), Search Console and GA4 numbers are limited to pages under that path; AdSense and Bing stay per domain.","사이트마다 Search Console 속성, GA4 속성, Bing 사이트를 고르세요. ‘자동 맞추기’는 URL로 채웁니다. URL에 경로가 있으면(예: https://example.com/ko/) Search Console과 GA4는 그 경로 아래 페이지만 집계합니다. 애드센스와 Bing은 도메인 단위입니다.","为每个网站选择 Search Console 资源、GA4 媒体资源和 Bing 网站。“自动匹配”会按网址填写。网址带路径时（如 https://example.com/ko/），Search Console 和 GA4 只统计该路径下的页面；AdSense 和 Bing 按整个域名统计。"],
+ add_site:["+ Add site","+ 사이트 추가","+ 添加网站"], save:["Save","저장","保存"], saved:["Saved.","저장했습니다.","已保存。"], automatch:["Auto-match","자동 맞추기","自动匹配"], reload_opts:["Reload lists","목록 새로고침","刷新列表"],
+ f_name:["Name","이름","名称"], f_url:["Homepage URL","홈페이지 URL","首页网址"], f_gsc:["Search Console property","Search Console 속성","Search Console 资源"], f_ga:["GA4 property","GA4 속성","GA4 媒体资源"], f_ads:["AdSense domain","애드센스 도메인","AdSense 域名"], f_bing:["Bing site","Bing 사이트","Bing 网站"], f_pages:["Key pages to check indexing (one URL per line; homepage if empty)","색인 확인할 주요 페이지 (한 줄에 URL 하나, 비우면 홈페이지)","需要检查收录的重要页面（每行一个网址，留空则检查首页）"],
+ none_opt:["— none —","— 없음 —","— 无 —"], loading:["Loading…","불러오는 중…","加载中…"],
+ s_bing:["4. Bing Webmaster Tools (optional)","4. Bing 웹마스터 도구 (선택)","4. Bing Webmaster Tools（可选）"],
+ s_bing_help:["Bing Webmaster Tools → Settings → API access → generate an API key.","Bing 웹마스터 도구 → 설정 → API 액세스 → API 키 생성.","Bing Webmaster Tools → 设置 → API 访问 → 生成 API 密钥。"],
+ bing_key:["API key","API 키","API 密钥"], key_saved:["(saved — enter a new one to replace)","(저장됨 — 바꾸려면 새 키 입력)","（已保存，输入新密钥可替换）"],
+ s_sched:["6. Daily check & alerts","6. 매일 확인 및 알림","6. 每日检查与提醒"],
+ s_sched_help:["While the app is open it checks once a day after this time. If it was closed, it checks as soon as you open it.","앱이 열려 있으면 매일 이 시각 이후 한 번 확인합니다. 닫혀 있었다면 열 때 바로 확인합니다.","应用打开时，每天在这个时间之后检查一次；如果当时没打开，下次打开时马上检查。"],
+ sched_time:["Daily check time","매일 확인 시각","每日检查时间"], threshold:["Alert when a metric drops by (%)","지표 하락 알림 기준 (%)","指标下降超过（%）时提醒"], ssl_warn:["SSL warning (days)","SSL 경고 (일)","SSL 提醒（天）"], domain_warn:["Domain warning (days)","도메인 경고 (일)","域名提醒（天）"],
+ s_backup:["Move to another computer","다른 컴퓨터로 옮기기","迁移到另一台电脑"],
+ s_backup_help:["Save your settings and keys (sites, schedule, ignored alerts, tracked keywords, OAuth client, Bing / PageSpeed / IndexNow keys) to one file, then open it in Site Pulse on the other computer. The file is locked with a password you choose (AES-256 encryption) — without the password nobody can read it. Keep the file and the password apart, and delete the file once you have moved.","사이트, 점검 시간, 무시한 알림, 추적 키워드, OAuth 클라이언트, Bing / PageSpeed / IndexNow 키를 파일 하나로 저장한 뒤 다른 컴퓨터의 Site Pulse에서 불러옵니다. 파일은 직접 정한 비밀번호로 잠깁니다(AES-256 암호화). 비밀번호 없이는 아무도 읽을 수 없습니다. 파일과 비밀번호는 따로 보관하고, 옮긴 뒤에는 파일을 지우세요.","把网站、检查时间、已忽略的提醒、跟踪的关键词、OAuth 客户端、Bing / PageSpeed / IndexNow 密钥保存成一个文件，再在另一台电脑的 Site Pulse 里导入。文件用你自己设的密码加密（AES-256），没有密码谁也打不开。文件和密码请分开保存，迁移完成后删除文件。"],
+ bk_pw:["Password (at least 8 characters)","비밀번호(8자 이상)","密码（至少 8 位）"], bk_pw2:["Repeat password","비밀번호 확인","再输入一次密码"],
+ bk_login:["Also include the Google sign-in (otherwise just sign in once on the new computer — safer)","Google 로그인도 포함(포함하지 않으면 새 컴퓨터에서 한 번만 로그인하면 됩니다 — 더 안전)","同时包含 Google 登录（不包含的话，在新电脑上重新登录一次即可，更安全）"],
+ bk_history:["Also include history (past checks, charts, reports)","기록도 포함(지난 점검, 그래프, 보고서)","同时包含历史数据（以前的检查、图表、报告）"],
+ bk_export:["Save backup file","백업 파일 저장","保存备份文件"], bk_import:["Open backup file","백업 파일 불러오기","导入备份文件"],
+ bk_pw_short:["The password needs at least 8 characters.","비밀번호는 8자 이상이어야 합니다.","密码至少要 8 位。"], bk_pw_diff:["The two passwords are different.","두 비밀번호가 다릅니다.","两次输入的密码不一样。"],
+ bk_saved:["Backup saved. Keep it somewhere safe and delete it after moving.","백업을 저장했습니다. 안전한 곳에 두고, 옮긴 뒤에는 지우세요.","备份已保存。请放在安全的地方，迁移完成后删除。"],
+ bk_ask_pw:["To open a backup, first type its password in the Password box above.","불러오려면 먼저 위의 비밀번호 칸에 그 백업 파일의 비밀번호를 입력하세요.","导入前，先在上面的“密码”框里输入这个备份文件的密码。"],
+ bk_bad_pw:["Wrong password, or the file is damaged.","비밀번호가 틀렸거나 파일이 손상되었습니다.","密码不对，或者文件已损坏。"], bk_not_file:["This is not a Site Pulse backup file.","Site Pulse 백업 파일이 아닙니다.","这不是 Site Pulse 的备份文件。"],
+ bk_confirm:["Importing replaces the settings and keys on this computer. Continue?","불러오면 이 컴퓨터의 설정과 키가 바뀝니다. 계속할까요?","导入会替换这台电脑上的设置和密钥。继续吗？"],
+ bk_done:["Imported {n} site(s).","사이트 {n}개를 불러왔습니다.","已导入 {n} 个网站。"], bk_done_login:["Google sign-in imported.","Google 로그인도 불러왔습니다.","Google 登录也已导入。"], bk_done_nologin:["Sign in to Google once in Account above.","위의 계정에서 Google에 한 번 로그인하세요.","请在上面的“账号”里登录一次 Google。"],
+ s_about:["About","정보","关于"], data_dir:["Data folder","데이터 폴더","数据文件夹"], window_browser:["Window opened with","창을 연 브라우저","窗口使用的浏览器"], default_browser:["system default browser","시스템 기본 브라우저","系统默认浏览器"],
+ quit:["Quit app","앱 종료","退出应用"], quit_done:["Site Pulse has stopped. You can close this window.","Site Pulse가 종료되었습니다. 창을 닫아도 됩니다.","Site Pulse 已停止，可以关闭这个窗口。"],
+ notif:["Desktop notifications for critical alerts","심각한 알림을 데스크톱 알림으로 받기","严重提醒时显示桌面通知"],
+ busy:["A check is already running.","이미 확인 중입니다.","正在检查中。"], check_done:["Check finished: {n} alerts.","확인 완료: 알림 {n}개.","检查完成：{n} 条提醒。"],
+ err:["Error: {e}","오류: {e}","错误：{e}"], history:["History","기록","历史"],
+ acct_state:["Account","계정","账号"], pending_tasks:["Pending: {t}","대기 중: {t}","待处理：{t}"],
+ // alert texts
+ a_site_down:["Site is not reachable ({s})","사이트에 접속할 수 없습니다 ({s})","网站无法访问（{s}）"],
+ a_site_slow:["Homepage is slow: {ms} ms","홈페이지가 느립니다: {ms} ms","首页响应慢：{ms} 毫秒"],
+ a_noindex:["Homepage has a noindex robots meta tag","홈페이지에 noindex 메타 태그가 있습니다","首页带有 noindex 标签"],
+ a_adsense_code_missing:["AdSense code not found on the homepage","홈페이지에서 애드센스 코드를 찾을 수 없습니다","首页没有找到 AdSense 代码"],
+ a_ssl_expiring:["SSL certificate expires in {days} days","SSL 인증서가 {days}일 후 만료됩니다","SSL 证书 {days} 天后到期"],
+ a_robots_block_all:["robots.txt blocks all crawlers (Disallow: /)","robots.txt가 모든 크롤러를 차단합니다 (Disallow: /)","robots.txt 屏蔽了所有爬虫（Disallow: /）"],
+ a_robots_missing:["robots.txt not found","robots.txt를 찾을 수 없습니다","找不到 robots.txt"],
+ a_sitemap_missing:["Sitemap not reachable: {url}","사이트맵에 접근할 수 없습니다: {url}","站点地图无法访问：{url}"],
+ a_adstxt_missing:["ads.txt not found","ads.txt를 찾을 수 없습니다","找不到 ads.txt"],
+ a_adstxt_mismatch:["ads.txt has no line for {pubId}","ads.txt에 {pubId} 줄이 없습니다","ads.txt 中没有 {pubId}"],
+ a_domain_expiring:["Domain expires in {days} days","도메인이 {days}일 후 만료됩니다","域名 {days} 天后到期"],
+ a_gsc_sitemap_errors:["Search Console reports {errors} errors in {path}","Search Console에서 {path}에 오류 {errors}개","Search Console 报告 {path} 有 {errors} 个错误"],
+ a_page_not_indexed:["Not indexed: {url} ({coverage})","색인되지 않음: {url} ({coverage})","未收录：{url}（{coverage}）"],
+ a_ads_site_state:["AdSense site status: {state}","애드센스 사이트 상태: {state}","AdSense 网站状态：{state}"],
+ a_source_error:["{source} could not be read: {message}","{source}을(를) 읽지 못했습니다: {message}","无法读取 {source}：{message}"],
+ a_metric_drop:["{metric} on {date}: {value} ({pct} vs 7-day avg {avg})","{date} {metric}: {value} (7일 평균 {avg} 대비 {pct})","{date} {metric}：{value}（较 7 天平均 {avg} {pct}）"],
+ a_metric_rise:["{metric} on {date}: {value} ({pct} vs 7-day avg {avg})","{date} {metric}: {value} (7일 평균 {avg} 대비 {pct})","{date} {metric}：{value}（较 7 天平均 {avg} {pct}）"],
+ a_auth_google:["Google sign-in needed — open Settings and sign in again","Google 로그인이 필요합니다 — 설정에서 다시 로그인하세요","需要登录 Google — 请到设置重新登录"],
+ a_auth_bing:["Bing API key was rejected","Bing API 키가 거부되었습니다","Bing API 密钥被拒绝"],
+ a_ads_alert:["AdSense: {message}","애드센스: {message}","AdSense：{message}"],
+ a_ads_account_state:["AdSense account status: {state}","애드센스 계정 상태: {state}","AdSense 账号状态：{state}"],
+ a_ads_policy:["AdSense policy issue ({topics}): {action} — {uri}","애드센스 정책 문제 ({topics}): {action} — {uri}","AdSense 政策问题（{topics}）：{action} — {uri}"],
+ st_READY:["Ready","준비됨","已就绪"], st_GETTING_READY:["Getting ready (in review)","준비 중 (검토 중)","准备中（审核中）"], st_REQUIRES_REVIEW:["Requires review — request review in AdSense","검토 필요 — 애드센스에서 검토 요청","需要审核 — 请在 AdSense 中申请审核"], st_NEEDS_ATTENTION:["Needs attention","조치 필요","需要处理"], st_NOT_ADDED:["Not added to AdSense","애드센스에 추가되지 않음","未添加到 AdSense"], st_CLOSED:["Closed","해지됨","已关闭"],
+};
+let LANG = 'en';
+const LI = {en:0,ko:1,zh:2};
+function t(k, p){ const e=I18N[k]; let s = e ? (e[LI[LANG]] ?? e[0]) : k; if(p) s = s.replace(/\{(\w+)\}/g,(m,n)=> p[n]!==undefined ? p[n] : m); return s; }
+function stName(s){ return I18N['st_'+s] ? t('st_'+s) : (s||''); }
+
+// ---------------- utils ----------------
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function api(path, opts={}){
+  const o = {...opts, headers:{...(opts.headers||{})}};
+  if(o.method && o.method!=='GET') o.headers['X-Site-Pulse']='1';
+  if(o.json!==undefined){ o.body=JSON.stringify(o.json); o.headers['Content-Type']='application/json'; delete o.json; }
+  const r = await fetch(path, o);
+  let data=null; try{ data = await r.json(); }catch(e){}
+  if(!r.ok) throw new Error((data && data.error) || r.statusText);
+  return data;
+}
+function toast(msg){ const d=document.createElement('div'); d.className='toast'; d.textContent=msg; document.body.appendChild(d); setTimeout(()=>d.remove(), 3500); }
+const pad = n => String(n).padStart(2,'0');
+const ds = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const addDays = (d,n) => { const x=new Date(d); x.setDate(x.getDate()+n); return x; };
+const today = () => ds(new Date());
+function locale(){ return LANG==='ko'?'ko-KR':LANG==='zh'?'zh-CN':'en-US'; }
+function fmtDate(s, long, withYear){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString(locale(), long?{year:'numeric',month:'short',day:'numeric'}:withYear?{year:'2-digit',month:'short',day:'numeric'}:{month:'short',day:'numeric'}); }
+
+const METRICS = {
+  ga_users:{fmt:'int'}, ga_sessions:{fmt:'int'}, ga_views:{fmt:'int'},
+  gsc_clicks:{fmt:'int'}, gsc_impr:{fmt:'int'}, gsc_ctr:{fmt:'pct'}, gsc_pos:{fmt:'dec',lower:true},
+  ads_earnings:{fmt:'cur'}, ads_pageviews:{fmt:'int'}, ads_rpm:{fmt:'cur'}, ads_impressions:{fmt:'int'}, ads_clicks:{fmt:'int'},
+  bing_clicks:{fmt:'int'}, bing_impr:{fmt:'int'},
+  psi_m_score:{fmt:'int'}, psi_d_score:{fmt:'int'}, psi_m_lcp:{fmt:'sec',lower:true}, psi_d_lcp:{fmt:'sec',lower:true}, psi_m_cls:{fmt:'cls',lower:true}, psi_m_tbt:{fmt:'int',lower:true},
+  http_ms:{fmt:'ms',lower:true}, http_ttfb:{fmt:'ms',lower:true},
+};
+const METRIC_GROUPS = [['src_ga',['ga_users','ga_sessions','ga_views']],['src_gsc',['gsc_clicks','gsc_impr','gsc_ctr','gsc_pos']],['src_ads',['ads_earnings','ads_rpm','ads_pageviews','ads_impressions','ads_clicks']],['src_bing',['bing_clicks','bing_impr']],['src_psi',['psi_m_score','psi_d_score','psi_m_lcp']],['src_check',['http_ms','http_ttfb']]];
+function fmtVal(key, v, compact){
+  if(v===undefined||v===null||isNaN(v)) return '—';
+  const f = (METRICS[key]||{}).fmt || 'int';
+  const L = locale();
+  if(f==='pct') return v.toLocaleString(L,{maximumFractionDigits:1})+'%';
+  if(f==='sec') return v.toLocaleString(L,{minimumFractionDigits:1,maximumFractionDigits:1})+' s';
+  if(f==='ms') return Math.round(v).toLocaleString(L)+' ms';
+  if(f==='cls') return v.toFixed(2);
+  if(f==='dec') return v.toLocaleString(L,{minimumFractionDigits:1,maximumFractionDigits:1});
+  if(f==='cur'){ const c = S.currency || 'USD'; try{ return v.toLocaleString(L,{style:'currency',currency:c,maximumFractionDigits: (c==='KRW'||c==='JPY')?0:2}); }catch(e){ return v.toFixed(2); } }
+  if(compact && Math.abs(v)>=10000) return v.toLocaleString(L,{notation:'compact',maximumFractionDigits:1});
+  return Math.round(v).toLocaleString(L);
+}
+const fmtPct = p => (p>0?'+':'')+p.toLocaleString(locale(),{maximumFractionDigits:0})+'%';
+// latest complete day + change vs mean of up to 7 days before it
+function latest(series, key){
+  if(!series) return null;
+  // speed and response time are measured during today's check, so today counts for them
+  const td = /^(psi_|http_)/.test(key) ? ds(addDays(new Date(),1)) : today();
+  const dates = Object.keys(series).filter(d => d<td && series[d][key]!==undefined).sort();
+  if(!dates.length) return null;
+  const last = dates[dates.length-1];
+  const prev = dates.slice(Math.max(0,dates.length-8), -1);
+  const v = series[last][key];
+  let pct=null, avg=null;
+  if(prev.length>=3){ avg = prev.reduce((s,d)=>s+series[d][key],0)/prev.length; if(avg>0) pct=(v-avg)/avg*100; }
+  return {date:last, v, pct, avg};
+}
+function deltaHtml(key, l){
+  if(!l || l.pct===null) return '';
+  const good = METRICS[key]?.lower ? l.pct<0 : l.pct>0;
+  if(Math.abs(l.pct)<0.5) return `<span class="delta flat">0%</span>`;
+  const cls = good ? 'up' : 'down';
+  const arrow = l.pct>0?'▲':'▼';
+  return `<span class="delta ${cls}">${arrow} ${fmtPct(l.pct)}</span>`;
+}
+const SERIES_VARS = ['--s1','--s2','--s3','--s4','--s5','--s6','--s7','--s8'];
+const cssVar = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+// ---------------- line chart ----------------
+// series: [{name, color, dash, points:{date:value}}]; dates: sorted list; fmt: value formatter
+function lineChart(el, {series, dates, fmt, height=260, yLabel, minZero=true, invert=false}){
+  el.innerHTML='';
+  const wrap = document.createElement('div'); wrap.className='chart';
+  if(series.length>1){
+    const lg = document.createElement('div'); lg.className='legend';
+    lg.innerHTML = series.map(s=>`<span><i class="${s.dash?'dash':''}" style="background:${s.color};border-color:${s.color}"></i>${esc(s.name)}</span>`).join('');
+    wrap.appendChild(lg);
+  }
+  el.appendChild(wrap);
+  const W = Math.max(320, el.clientWidth||800), H=height, m={l:56,r: series.length<=4 && series.length>1 ? 150 : 16, t:10, b:28};
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  let vals=[]; series.forEach(s=>dates.forEach(d=>{ const v=s.points[d]; if(v!==undefined&&v!==null) vals.push(v); }));
+  if(!vals.length){ wrap.insertAdjacentHTML('beforeend',`<div class="empty">${t('no_data')}</div>`); return; }
+  let lo = minZero ? Math.min(0,...vals) : Math.min(...vals), hi=Math.max(...vals);
+  if(hi===lo){ hi = lo + (lo===0?1:Math.abs(lo)*0.1); }
+  const ticks = niceTicks(lo, hi, 5); lo = ticks[0]; hi = ticks[ticks.length-1];
+  const x = i => m.l + (dates.length<=1 ? iw/2 : i*iw/(dates.length-1));
+  const y = v => invert ? m.t + (v-lo)/(hi-lo)*ih : m.t + ih - (v-lo)/(hi-lo)*ih;
+  const NS='http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS,'svg'); svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('height',H);
+  svg.setAttribute('role','img'); if(yLabel) svg.setAttribute('aria-label', yLabel);
+  let g = '';
+  ticks.forEach(tv=>{ g+=`<line x1="${m.l}" x2="${W-m.r}" y1="${y(tv)}" y2="${y(tv)}" stroke="var(--grid)" stroke-width="1"/>`;
+    g+=`<text x="${m.l-8}" y="${y(tv)+4}" text-anchor="end" font-size="11" fill="var(--muted)" style="font-variant-numeric:tabular-nums">${esc(fmt(tv,true))}</text>`; });
+  const step = Math.max(1, Math.ceil(dates.length/8));
+  const multiYear = dates.length>1 && dates[0].slice(0,4)!==dates[dates.length-1].slice(0,4);
+  dates.forEach((d,i)=>{ if(i%step===0 || i===dates.length-1 && dates.length<=8) g+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-size="11" fill="var(--muted)">${esc(fmtDate(d,false,multiYear))}</text>`; });
+  g+=`<line x1="${m.l}" x2="${W-m.r}" y1="${m.t+ih}" y2="${m.t+ih}" stroke="var(--axis)"/>`;
+  const labelYs=[];
+  series.forEach(s=>{
+    let path='', pen=false;
+    dates.forEach((d,i)=>{ const v=s.points[d]; if(v===undefined||v===null){ pen=false; return; } path += (pen?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1); pen=true; });
+    g+=`<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" ${s.dash?'stroke-dasharray="5 4"':''}/>`;
+    // isolated points get a marker so they are visible
+    dates.forEach((d,i)=>{ const v=s.points[d]; if(v===undefined||v===null) return; const pv=s.points[dates[i-1]], nv=s.points[dates[i+1]];
+      if((pv===undefined||pv===null)&&(nv===undefined||nv===null)) g+=`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="${s.color}" stroke="var(--card)" stroke-width="2"/>`; });
+    if(series.length>1 && series.length<=4){
+      let li=-1; for(let i=dates.length-1;i>=0;i--){ if(s.points[dates[i]]!==undefined&&s.points[dates[i]]!==null){li=i;break;} }
+      if(li>=0) labelYs.push({y:y(s.points[dates[li]]), name:s.name});
+    }
+  });
+  labelYs.sort((a,b)=>a.y-b.y); for(let i=1;i<labelYs.length;i++) if(labelYs[i].y-labelYs[i-1].y<14) labelYs[i].y=labelYs[i-1].y+14;
+  labelYs.forEach(l=>{ const nm = l.name.length>20 ? l.name.slice(0,19)+'…' : l.name; g+=`<text x="${W-m.r+8}" y="${l.y+4}" font-size="11" fill="var(--ink2)">${esc(nm)}</text>`; });
+  g+=`<line id="xh" x1="0" x2="0" y1="${m.t}" y2="${m.t+ih}" stroke="var(--axis)" stroke-width="1" style="display:none"/>`;
+  g+=`<g id="dots"></g><rect x="${m.l}" y="${m.t}" width="${iw}" height="${ih}" fill="transparent" id="hit"/>`;
+  svg.innerHTML = g; wrap.appendChild(svg);
+  const tip = document.createElement('div'); tip.className='tip'; wrap.appendChild(tip);
+  const xh = svg.querySelector('#xh'), dots = svg.querySelector('#dots'), hit = svg.querySelector('#hit');
+  const show = ev => {
+    const r = svg.getBoundingClientRect(); const px = (ev.clientX - r.left) * W / r.width;
+    const i = dates.length<=1 ? 0 : Math.max(0, Math.min(dates.length-1, Math.round((px-m.l)/iw*(dates.length-1))));
+    xh.setAttribute('x1',x(i)); xh.setAttribute('x2',x(i)); xh.style.display='';
+    let rows='', dh='';
+    series.forEach(s=>{ const v=s.points[dates[i]]; if(v===undefined||v===null) return;
+      dh += `<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="${s.color}" stroke="var(--card)" stroke-width="2"/>`;
+      rows += `<div class="r"><span><i style="background:${s.color}"></i>${esc(s.name)}</span><b>${esc(fmt(v))}</b></div>`; });
+    dots.innerHTML = dh;
+    tip.innerHTML = `<div class="d">${esc(fmtDate(dates[i], true))}</div>${rows || '<div class="muted">—</div>'}`;
+    tip.style.display='block';
+    const left = x(i) * r.width / W; const tw = tip.offsetWidth;
+    tip.style.left = (left + 14 + tw > r.width ? left - tw - 14 : left + 14) + 'px';
+    tip.style.top = (wrap.querySelector('.legend')?.offsetHeight||0) + 8 + 'px';
+  };
+  hit.addEventListener('mousemove', show);
+  hit.addEventListener('mouseleave', ()=>{ tip.style.display='none'; xh.style.display='none'; dots.innerHTML=''; });
+  // table view for accessibility
+  const det = document.createElement('details'); det.innerHTML = `<summary class="small">${t('table_view')}</summary>`;
+  const tw = document.createElement('div'); tw.className='tablewrap';
+  tw.innerHTML = `<table><thead><tr><th>${t('date')}</th>${series.map(s=>`<th class="num">${esc(s.name)}</th>`).join('')}</tr></thead><tbody>${
+    dates.slice().reverse().map(d=>`<tr><td>${esc(fmtDate(d,true))}</td>${series.map(s=>`<td class="num">${s.points[d]===undefined?'—':esc(fmt(s.points[d]))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  det.appendChild(tw); wrap.appendChild(det);
+}
+function niceTicks(lo, hi, n){
+  const span = hi-lo; const raw = span/n; const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const st = [1,2,2.5,5,10].map(f=>f*mag).find(s=>s>=raw) || 10*mag;
+  const a = Math.floor(lo/st)*st, b = Math.ceil(hi/st)*st; const out=[];
+  for(let v=a; v<=b+st/2; v+=st) out.push(+v.toFixed(10));
+  return out;
+}
+function dateRange(days){ const out=[]; const end=addDays(new Date(),-1); for(let i=days-1;i>=0;i--) out.push(ds(addDays(end,-i))); return out; }
+
+// ---------------- state & routing ----------------
+let S = {}; let RUN = null; let METRICS_DATA = {}; let OPTIONS = null;
+const view = {pgSite:'', pgFilter:'all', auSite:'', metric:'gsc_clicks', range:28, siteMetric:'gsc_clicks', kwSite:'', kwRange:28, kwRows:null, kwSel:[], kwSeries:null, kwMetric:'clicks', trSel:null, overlay:false};
+try{ Object.assign(view, JSON.parse(localStorage.getItem('sm_view')||'{}')); }catch(e){}
+function saveView(){ try{ const {kwRows,kwSeries,...rest}=view; localStorage.setItem('sm_view', JSON.stringify(rest)); }catch(e){} }
+
+async function loadState(){ S = await api('/api/state'); LANG = S.lang || ({ko:'ko',zh:'zh'}[(navigator.language||'en').slice(0,2)] || 'en'); document.documentElement.lang = LANG; $('#langSel').value = LANG; }
+async function loadRun(date){ RUN = await api('/api/run'+(date?'?date='+date:'')); }
+async function loadMetrics(){ METRICS_DATA = await api('/api/metrics?from='+ds(addDays(new Date(),-200))); }
+
+function renderNav(){
+  const r = route().name;
+  const items = [['overview','nav_overview'],['compare','nav_compare'],['pages','nav_pages'],['keywords','nav_keywords'],['audit','nav_audit'],['reports','nav_reports'],['settings','nav_settings']];
+  $('#nav').innerHTML = items.map(([k,l])=>`<a href="#${k}" class="${r===k||(k==='overview'&&r==='site')?'active':''}">${t(l)}</a>`).join('');
+  const lr = S.runDates?.length ? S.runDates[S.runDates.length-1] : null;
+  $('#lastrun').textContent = t('last_check')+': '+(RUN && RUN.time ? new Date(RUN.time*1000).toLocaleString(locale(),{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : lr ? fmtDate(lr) : t('never'));
+  const b = $('#collectBtn');
+  b.innerHTML = S.busy ? `<span class="spin"></span> ${t('collecting')}` : t('collect');
+  b.disabled = !!S.busy || !(S.sites||[]).length;
+}
+function route(){ const h = location.hash.slice(1); const [path, qs] = h.split('?'); const parts = path.split('/'); return {name: parts[0]||'overview', arg: parts[1], q: new URLSearchParams(qs||'')}; }
+async function render(){
+  renderNav();
+  const r = route(); const m = $('#main');
+  try{
+    if(r.name==='settings') await renderSettings(m, r);
+    else if(r.name==='compare') renderCompare(m);
+    else if(r.name==='keywords') await renderKeywords(m);
+    else if(r.name==='audit') await renderAudit(m);
+    else if(r.name==='pages') await renderPages(m, r.arg);
+    else if(r.name==='reports') await renderReports(m, r.arg);
+    else if(r.name==='site') renderSite(m, r.arg);
+    else renderOverview(m);
+  }catch(e){ m.innerHTML = `<div class="card">${esc(t('err',{e:e.message}))}</div>`; }
+}
+window.addEventListener('hashchange', render);
+let resizeT; window.addEventListener('resize', ()=>{ clearTimeout(resizeT); resizeT=setTimeout(()=>{ const n=route().name; if(n!=='settings') render(); }, 200); });
+
+$('#langSel').addEventListener('change', async e=>{ LANG = e.target.value; document.documentElement.lang=LANG; await api('/api/config',{method:'POST',json:{lang:LANG}}); S.lang=LANG; render(); });
+$('#collectBtn').addEventListener('click', collectNow);
+async function collectNow(){
+  S.busy = true; renderNav();
+  try{ RUN = await api('/api/collect',{method:'POST'}); await loadMetrics(); toast(t('check_done',{n:RUN.alerts?.length||0})); notifyCritical(RUN); }
+  catch(e){ toast(e.message==='busy'?t('busy'):t('err',{e:e.message})); }
+  await loadState(); await render();
+}
+function notifyCritical(run){
+  if(!run || !('Notification' in window) || Notification.permission!=='granted') return;
+  const ign=new Set(S.ignored||[]); const crit = (run.alerts||[]).filter(a=>a.level==='error' && !ign.has(alertKey(a)));
+  if(crit.length) new Notification('Site Pulse', {body: crit.slice(0,3).map(a=>alertText(a)).join('\n')});
+}
+
+// ---------------- overview ----------------
+function siteName(id){ return (S.sites||[]).find(s=>s.id===id)?.name || id; }
+function alertText(a){
+  const p = {...(a.params||{})};
+  if(a.code==='metric_drop'||a.code==='metric_rise'){ const k=p.metric; p.metric=t('m_'+k); p.value=fmtVal(k,p.value); p.avg=fmtVal(k,p.avg); p.pct=fmtPct(p.pct); p.date=fmtDate(p.date); }
+  if(a.code==='site_down') p.s = p.status ? 'HTTP '+p.status : (p.error||'');
+  if(a.code==='psi_poor'||a.code==='psi_drop'){ p.score=Math.round(p.score); if(p.prev!==undefined) p.prev=Math.round(p.prev); }
+  if(a.code==='weekly_report'){ p.a = fmtDate(p.week,true); p.b = fmtDate(ds(addDays(new Date(p.week+'T00:00:00'),6)),true); }
+  if(a.code==='kw_drop'){ p.pos = (+p.pos).toFixed(1); p.prev = (+p.prev).toFixed(1); }
+  if(a.code==='source_error') p.source = t('src_'+p.source);
+  if(p.state) p.state = stName(p.state);
+  return t('a_'+a.code, p);
+}
+// where an alert comes from, what it affects, how to fix it, and where to go
+function alertInfo(a){
+  const p = a.params||{}; const site = (S.sites||[]).find(x=>x.id===a.siteId);
+  const enc = encodeURIComponent; const origin = site ? (()=>{ try{ return new URL(site.url).origin; }catch(e){ return ''; } })() : '';
+  const gsc = site?.gscProperty; const ADS='https://adsense.google.com/', GA='https://analytics.google.com/', BING='https://www.bing.com/webmasters/';
+  const checkSrc = 'src_check';
+  const m = {
+    site_down:{src:checkSrc, how:'fix_site_down', link:site?.url},
+    site_slow:{src:checkSrc, how:'fix_site_slow', link:site?.url},
+    noindex:{src:checkSrc, how:'fix_noindex', link:site?.url},
+    adsense_code_missing:{src:checkSrc, how:'fix_adsense_code', link:ADS},
+    ssl_expiring:{src:checkSrc, how:'fix_ssl'},
+    robots_block_all:{src:checkSrc, how:'fix_robots_block', link:origin&&origin+'/robots.txt'},
+    robots_missing:{src:checkSrc, how:'fix_robots_missing', link:origin&&origin+'/robots.txt'},
+    sitemap_missing:{src:checkSrc, how:'fix_sitemap', link: gsc?`https://search.google.com/search-console/sitemaps?resource_id=${enc(gsc)}`:p.url},
+    adstxt_missing:{src:checkSrc, how:'fix_adstxt', link:ADS},
+    adstxt_mismatch:{src:checkSrc, how:'fix_adstxt', link:ADS},
+    domain_expiring:{src:checkSrc, how:'fix_domain'},
+    gsc_sitemap_errors:{src:'src_gsc', how:'fix_gsc_sitemap', link: gsc&&`https://search.google.com/search-console/sitemaps?resource_id=${enc(gsc)}`},
+    page_not_indexed:{src:'src_gsc', how: /redirect/i.test(p.coverage||'') ? 'fix_redirect' : 'fix_not_indexed', link: gsc&&`https://search.google.com/search-console?resource_id=${enc(gsc)}`},
+    ads_site_state:{src:'src_ads', how:'fix_ads_'+(p.state||''), link:ADS},
+    new_not_indexed:{src:'src_gsc', how:'fix_new_not_indexed', link:'#pages/index'},
+    weekly_report:{src:'src_report', how:'', link: p.week?'#reports/'+p.week:'#reports'},
+    broken_links:{src:checkSrc, how:'fix_broken_links', link:'#pages/links'},
+    broken_links_ext:{src:checkSrc, how:'fix_broken_links_ext', link:'#pages/links'},
+    kw_drop:{src:'src_gsc', how:'fix_kw_drop', link:'#keywords'},
+    psi_poor:{src:'src_psi', how:'fix_psi', link: p.url?`https://pagespeed.web.dev/analysis?url=${enc(p.url)}`:''},
+    psi_drop:{src:'src_psi', how:'fix_psi', link: p.url?`https://pagespeed.web.dev/analysis?url=${enc(p.url)}`:''},
+    ads_alert:{src:'src_ads', how:'fix_ads_alert', link:ADS},
+    ads_account_state:{src:'src_ads', how:'fix_ads_account', link:ADS},
+    ads_policy:{src:'src_ads', how:'fix_ads_policy', link:ADS},
+    auth_google:{src:'google', how:'fix_auth_google', link:'#settings'},
+    auth_bing:{src:'src_bing', how:'fix_auth_bing', link:'#settings'},
+    metric_drop:{src:metricSrc(p.metric), how:'fix_metric_drop', link: site?'#site/'+site.id:''},
+    metric_rise:{src:metricSrc(p.metric), how:'fix_metric_rise', link: '#keywords'},
+    source_error:{src:'src_'+(p.source==='gscSitemaps'?'gsc':p.source), how: p.source==='bing'?'fix_source_error_bing':'fix_source_error', link: p.source==='bing'?BING:'#settings'},
+  }[a.code] || {src:'src_check', how:''};
+  if(m.how && !I18N[m.how]) m.how = a.code==='ads_site_state' ? 'fix_ads_other' : '';
+  const linkName = !m.link ? '' : m.link.startsWith('#') ? t('open_in_app') : m.link.includes('pagespeed') ? 'PageSpeed' : m.link.includes('adsense') ? 'AdSense' : m.link.includes('search-console') ? 'Search Console' : m.link.includes('analytics') ? 'Analytics' : m.link.includes('bing.com') ? 'Bing' : t('open_page');
+  return {...m, scope: a.siteId ? (site?.name||a.siteId) : (m.src==='src_ads'?t('scope_account'):''), linkName};
+}
+function metricSrc(k){ return !k?'src_check': k.startsWith('ga_')?'src_ga': k.startsWith('gsc_')?'src_gsc': k.startsWith('ads_')?'src_ads':'src_bing'; }
+function alertKey(a){ const p=a.params||{}; return [a.code, a.siteId||'', p.url||p.type||p.message||p.path||p.state||p.source||'', p.metric?p.metric+'@'+p.date:''].join('|'); }
+function alertsHtml(alerts, opts={}){
+  const ign = new Set(S.ignored||[]);
+  const shown = (alerts||[]).filter(a=>!ign.has(alertKey(a)));
+  const hidden = (alerts||[]).length - shown.length;
+  const showIgn = opts.showIgnored;
+  const list = showIgn ? (alerts||[]) : shown;
+  let html = '';
+  if(!list.length) html += `<div class="row"><span class="st good"><i></i>${t('no_alerts')}</span></div>`;
+  const ico = {error:'!',warn:'!',info:'i'};
+  html += `<div class="alerts">${list.map(a=>{ const info=alertInfo(a); const k=alertKey(a); const isIgn=ign.has(k);
+    const ext = info.link && !info.link.startsWith('#');
+    return `<div class="alert ${a.level}${isIgn?' ignored':''}"><div class="ico" aria-hidden="true">${ico[a.level]||'i'}</div><div class="grow">
+      <div class="lvl">${t('lvl_'+a.level)} · <span class="src">${esc(t(info.src))}</span>${info.scope?` · <span class="site">${esc(info.scope)}</span>`:''}</div>
+      <div>${esc(alertText(a))}</div>
+      ${info.how?`<div class="how"><b>${t('how_fix')}</b> ${esc(t(info.how, a.params||{}))}</div>`:''}
+      <div class="acts">${info.link?`<a class="btn sm" href="${esc(info.link)}" ${ext?'target="_blank" rel="noopener"':''}>${esc(info.linkName)}${ext?' ↗':''}</a>`:''}<button class="btn sm ghost" data-ign="${esc(k)}" data-on="${isIgn?0:1}">${isIgn?t('unignore'):t('ignore')}</button></div>
+    </div></div>`; }).join('')}</div>`;
+  if(hidden) html += `<p class="small muted" style="margin:8px 0 0">${t('ignored_n',{n:hidden})} <a href="#" data-showign="1">${showIgn?t('hide_ignored'):t('show_ignored')}</a></p>`;
+  return html;
+}
+let SHOW_IGNORED = false;
+function bindAlerts(root){
+  root.querySelectorAll('[data-ign]').forEach(b=>b.addEventListener('click', async ()=>{
+    await api('/api/ignore',{method:'POST',json:{key:b.dataset.ign, on:b.dataset.on==='1'}}); await loadState(); render(); }));
+  root.querySelectorAll('[data-showign]').forEach(l=>l.addEventListener('click', e=>{ e.preventDefault(); SHOW_IGNORED=!SHOW_IGNORED; render(); }));
+}
+function stDot(cls, text){ return `<span class="st ${cls}"><i></i>${esc(text)}</span>`; }
+function connHtml(){
+  const g = RUN?.auth?.google;
+  let gs;
+  if(!S.hasClient) gs = stDot('bad', t('no_client'));
+  else if(!S.signedIn) gs = stDot('bad', t('signed_out'));
+  else if(g==='expired') gs = stDot('bad', t('expired'));
+  else gs = stDot('good', t('signed_in_as',{e:S.email||''}));
+  const bk = !S.hasBingKey ? stDot('na', t('no_key')) : RUN?.auth?.bing==='invalid' ? stDot('bad', t('key_invalid')) : stDot('good', t('key_ok'));
+  const ac = RUN?.account||{};
+  let as = stDot('na','—');
+  if(ac.none) as = stDot('na', t('ads_none'));
+  else if(ac.state) as = stDot(ac.state==='READY'?'good':ac.state==='CLOSED'||ac.state==='NEEDS_ATTENTION'?'bad':'warn', `${ac.pubId||''} · ${stName(ac.state)}`) + (ac.pendingTasks?.length?` <span class="small muted">${esc(t('pending_tasks',{t:ac.pendingTasks.join(', ')}))}</span>`:'');
+  else if(ac.error) as = stDot('warn', ac.error);
+  return `<div class="grid2"><div><div class="small muted">${t('google')}</div>${gs}</div><div><div class="small muted">${t('adsense')}</div>${as}</div><div><div class="small muted">${t('bing')}</div>${bk}</div></div>`;
+}
+function setupHtml(){
+  const done = [S.hasClient, S.signedIn, (S.sites||[]).length>0, S.hasBingKey];
+  if(done[0]&&done[1]&&done[2]) return '';
+  const keys=['step_client','step_signin','step_sites','step_bing'];
+  return `<div class="card"><h2>${t('setup_title')}</h2><p class="sub">${t('setup_sub')}</p><ol class="steps">${keys.map((k,i)=>`<li class="${done[i]?'done':''}">${t(k)}</li>`).join('')}</ol><p><a class="btn primary" href="#settings">${t('go_settings')}</a></p></div>`;
+}
+function checkFor(siteId){ return (RUN?.sites||[]).find(s=>s.siteId===siteId) || null; }
+function statusCells(sc){
+  const st = sc?.status||{};
+  const h = st.http; let http = stDot('na', t('na')), speed='—', ssl='—', dom='—', ads='—', idx='—';
+  if(h){ http = h.ok ? stDot('good', t('ok')+(h.status?' '+h.status:'')) : stDot('bad', t('down')); if(h.ms!==undefined) speed = stDot(h.ms>3000?'warn':'good', h.ms.toLocaleString(locale())+' ms');
+    if(h.sslDays!==undefined) ssl = stDot(h.sslDays<7?'bad':h.sslDays<(S.sslWarn||14)?'warn':'good', t('days',{n:h.sslDays})); }
+  if(st.domain){ dom = st.domain.days!==undefined ? stDot(st.domain.days<7?'bad':st.domain.days<(S.domainWarn||30)?'warn':'good', t('days',{n:st.domain.days})) : stDot('na','—'); }
+  if(st.adstxt){ const a=st.adstxt; ads = a.ok ? stDot('good', t('ok')) : a.found===false ? stDot('bad', t('missing')) : a.pubId ? stDot('bad', t('mismatch')) : stDot('warn', t('missing')); }
+  const ins = sc?.gsc?.inspections;
+  if(ins?.length){ const okN = ins.filter(i=>i.verdict==='PASS').length; const valid = ins.filter(i=>!i.error).length; if(valid) idx = stDot(okN===valid?'good':'warn', okN+'/'+valid); }
+  return {http, speed, ssl, dom, ads, idx};
+}
+function renderOverview(m){
+  const sites = S.sites||[];
+  const cols = ['ga_users','gsc_clicks','gsc_impr','ads_earnings','ads_rpm','bing_clicks'];
+  let html = setupHtml();
+  html += `<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">${t('alerts')}</h2>${historySel()}</div><div style="margin-top:12px">${RUN?alertsHtml(RUN.alerts,{showIgnored:SHOW_IGNORED}):`<div class="muted">${t('no_data')}</div>`}</div></div>`;
+  html += `<div class="card"><h2>${t('platforms')}</h2>${connHtml()}</div>`;
+  if(sites.length){
+    html += `<div class="card"><h2>${t('sites_table')}</h2><p class="sub small">${t('latest_day')}</p><div class="tablewrap"><table><thead><tr><th>${t('col_site')}</th><th>${t('col_status')}</th><th>${t('col_speed')}</th><th>${t('col_ssl')}</th><th>${t('col_domain')}</th><th>${t('col_adstxt')}</th><th>${t('col_index')}</th>${cols.map(c=>`<th class="num">${t('m_'+c)}</th>`).join('')}</tr></thead><tbody>`;
+    sites.forEach(s=>{
+      const c = statusCells(checkFor(s.id)); const md = METRICS_DATA[s.id];
+      html += `<tr style="cursor:pointer" data-site="${esc(s.id)}"><td><a href="#site/${esc(s.id)}"><b>${esc(s.name)}</b></a><div class="small muted">${esc(s.url)}</div></td><td>${c.http}</td><td>${c.speed}</td><td>${c.ssl}</td><td>${c.dom}</td><td>${c.ads}</td><td>${c.idx}</td>`;
+      cols.forEach(k=>{ const l = latest(md,k); html += `<td class="num">${l?esc(fmtVal(k,l.v,true))+deltaHtml(k,l):'<span class="muted">—</span>'}</td>`; });
+      html += `</tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+  }
+  m.innerHTML = html;
+  m.querySelectorAll('tr[data-site]').forEach(tr=>tr.addEventListener('click', e=>{ if(e.target.tagName!=='A') location.hash='#site/'+tr.dataset.site; }));
+  bindHistory(m);
+  bindAlerts(m);
+}
+function historySel(){
+  const ds_ = S.runDates||[]; if(ds_.length<2) return '';
+  return `<label class="row small muted">${t('history')} <select id="histSel">${ds_.slice().reverse().map(d=>`<option value="${d}" ${RUN&&RUN.date===d?'selected':''}>${esc(fmtDate(d,true))}</option>`).join('')}</select></label>`;
+}
+function bindHistory(m){ const h=$('#histSel',m); if(h) h.addEventListener('change', async ()=>{ await loadRun(h.value); render(); }); }
+
+// ---------------- compare ----------------
+function metricSelect(id, val){
+  return `<select id="${id}">${METRIC_GROUPS.map(([g,ks])=>`<optgroup label="${esc(t(g))}">${ks.map(k=>`<option value="${k}" ${k===val?'selected':''}>${esc(t('m_'+k))}</option>`).join('')}</optgroup>`).join('')}</select>`;
+}
+function rangeSeg(val, attr){ return `<div class="seg">${[7,28,90].map(n=>`<button data-${attr}="${n}" class="${n===val?'on':''}">${t('d'+n)}</button>`).join('')}</div>`; }
+// rows of the plain-language scoreboard
+const CMP_ROWS = [
+  {group:'g_traffic', rows:[
+    {k:'ga_users', agg:'avg', label:'c_visitors', hint:'h_visitors'},
+    {k:'ga_views', agg:'sum', label:'c_views', hint:'h_views'}]},
+  {group:'g_search', rows:[
+    {k:'gsc_clicks', agg:'sum', label:'c_gclicks', hint:'h_gclicks'},
+    {k:'gsc_impr', agg:'sum', label:'c_gimpr', hint:'h_gimpr'},
+    {k:'gsc_ctr', agg:'ctr', label:'c_ctr', hint:'h_ctr'},
+    {k:'gsc_pos', agg:'pos', label:'c_pos', hint:'h_pos', lower:true},
+    {k:'bing_clicks', agg:'sum', label:'c_bclicks', hint:'h_bclicks'}]},
+  {group:'g_money', rows:[
+    {k:'ads_earnings', agg:'sum', label:'c_earn', hint:'h_earn'},
+    {k:'ads_rpm', agg:'rpm', label:'c_rpm', hint:'h_rpm'}]},
+];
+const CHIP_METRICS = ['ga_users','ga_views','gsc_clicks','gsc_impr','gsc_pos','ads_earnings','ads_rpm','bing_clicks'];
+const CHIP_LABEL = {ga_users:'c_visitors', ga_views:'c_views', gsc_clicks:'c_gclicks', gsc_impr:'c_gimpr', gsc_pos:'c_pos', ads_earnings:'c_earn', ads_rpm:'c_rpm', bing_clicks:'c_bclicks'};
+// raw ingredients so ratios (CTR, position, RPM) can be combined correctly across days and sites
+function aggParts(md, row, dates){
+  let n=0, a=0, b=0;
+  for(const d of dates){ const x = md?.[d]; if(!x || x[row.k]===undefined) continue; n++;
+    if(row.agg==='ctr'){ a+=x.gsc_clicks||0; b+=x.gsc_impr||0; }
+    else if(row.agg==='pos'){ const w=x.gsc_impr||0; a+=x.gsc_pos*w; b+=w; }
+    else if(row.agg==='rpm'){ a+=x.ads_earnings||0; b+=x.ads_pageviews||0; }
+    else a+=x[row.k]; }
+  return {n,a,b};
+}
+function aggValue(row, p){
+  if(!p || !p.n) return null;
+  if(row.agg==='sum') return p.a;
+  if(row.agg==='avg') return p.a/p.n;
+  if(row.agg==='ctr') return p.b ? p.a/p.b*100 : null;
+  if(row.agg==='pos') return p.b ? p.a/p.b : null;
+  if(row.agg==='rpm') return p.b ? p.a/p.b*1000 : null;
+}
+function addParts(ps){ const o={n:0,a:0,b:0}; ps.forEach(p=>{ if(p){ o.n=Math.max(o.n,p.n); o.a+=p.a; o.b+=p.b; } }); return o; }
+// the window ends on the latest day any site has this metric (Search Console lags 2–3 days)
+function windowFor(k, N){
+  const td = today(); let end='';
+  for(const md of Object.values(METRICS_DATA)) for(const d in md) if(d<td && md[d][k]!==undefined && d>end) end=d;
+  if(!end) return null;
+  const e = new Date(end+'T00:00:00');
+  const cur=[], prev=[];
+  for(let i=N-1;i>=0;i--) cur.push(ds(addDays(e,-i)));
+  for(let i=2*N-1;i>=N;i--) prev.push(ds(addDays(e,-i)));
+  return {cur, prev, end};
+}
+function sparkline(vals, color, lower){
+  const pts = vals.map((v,i)=>[i,v]).filter(p=>p[1]!==undefined&&p[1]!==null);
+  if(pts.length<2) return '';
+  const W=88,H=24; const ys=pts.map(p=>p[1]); let lo=Math.min(...ys), hi=Math.max(...ys); if(hi===lo){ hi=lo+1; }
+  const x=i=>2+i*(W-4)/(vals.length-1), y=v=> lower ? 2+(v-lo)/(hi-lo)*(H-4) : H-2-(v-lo)/(hi-lo)*(H-4);
+  const d = pts.map((p,j)=>(j?'L':'M')+x(p[0]).toFixed(1)+' '+y(p[1]).toFixed(1)).join('');
+  const last = pts[pts.length-1];
+  return `<svg class="spark" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true"><path d="${d}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${x(last[0])}" cy="${y(last[1])}" r="2.5" fill="${color}"/></svg>`;
+}
+function changeHtml(row, cur, prev){
+  if(cur===null || prev===null || prev===undefined) return `<span class="chg flat">${t('no_prev')}</span>`;
+  if(row.agg==='pos'){ const diff = prev-cur; if(Math.abs(diff)<0.05) return `<span class="chg flat">${t('same')}</span>`;
+    return `<span class="chg ${diff>0?'up':'down'}">${diff>0?'▲':'▼'} ${t(diff>0?'pos_up':'pos_down',{n:Math.abs(diff).toFixed(1)})}</span>`; }
+  if(row.agg==='ctr'){ const diff=cur-prev; if(Math.abs(diff)<0.05) return `<span class="chg flat">${t('same')}</span>`;
+    return `<span class="chg ${diff>0?'up':'down'}">${diff>0?'▲':'▼'} ${(diff>0?'+':'')+diff.toFixed(1)}%p</span>`; }
+  if(prev===0) return cur>0 ? `<span class="chg up">▲ ${t('new_q')}</span>` : `<span class="chg flat">${t('same')}</span>`;
+  const pct=(cur-prev)/prev*100; if(Math.abs(pct)<0.5) return `<span class="chg flat">${t('same')}</span>`;
+  return `<span class="chg ${pct>0?'up':'down'}">${pct>0?'▲':'▼'} ${fmtPct(pct)}</span>`;
+}
+function healthOf(siteId){
+  const ign=new Set(S.ignored||[]); const al = (RUN?.alerts||[]).filter(a=>a.siteId===siteId && a.code!=='metric_rise' && !ign.has(alertKey(a)));
+  if(!RUN) return {cls:'na', text:t('h_unknown')};
+  if(al.some(a=>a.level==='error')) return {cls:'bad', text:t('h_bad',{n:al.filter(a=>a.level==='error').length})};
+  if(al.some(a=>a.level==='warn')) return {cls:'warn', text:t('h_warn',{n:al.filter(a=>a.level==='warn').length})};
+  return {cls:'good', text:t('h_good')};
+}
+function renderCompare(m){
+  const sites = (S.sites||[]).slice(0,8);
+  const N = view.range;
+  const colors = sites.map((s,i)=>cssVar(SERIES_VARS[i]));
+  if(!sites.length){ m.innerHTML = `<h1>${t('compare_title')}</h1><div class="card empty">${t('no_data')}</div>`; return; }
+  // compute every row once
+  const calc = {};
+  CMP_ROWS.forEach(g=>g.rows.forEach(row=>{
+    const w = windowFor(row.k, N); if(!w){ calc[row.k]=null; return; }
+    const per = sites.map(s=>{ const md=METRICS_DATA[s.id]; const pc=aggParts(md,row,w.cur), pp=aggParts(md,row,w.prev);
+      return {pc, cur:aggValue(row,pc), prev: pp.n>=Math.ceil(N/2) ? aggValue(row,pp) : null, spark:w.cur.map(d=>md?.[d]?.[row.k])}; });
+    const tc = addParts(per.map(p=>p.pc)), tp = addParts(sites.map(s=>aggParts(METRICS_DATA[s.id],row,w.prev)));
+    calc[row.k] = {w, per, total:{cur:aggValue(row,tc), prev: tp.n>=Math.ceil(N/2)?aggValue(row,tp):null}};
+  }));
+  const anyWin = calc.ga_users?.w || calc.gsc_clicks?.w || calc.ads_earnings?.w;
+  let html = `<div class="row" style="justify-content:space-between;align-items:flex-end"><div><h1>${t('compare_title')}</h1><p class="sub" style="margin:0">${t('cmp_intro')}</p></div><div class="row"><span class="small muted">${t('cmp_period')}</span>${rangeSeg(N,'r')}</div></div>`;
+  if(anyWin) html += `<p class="small muted" style="margin:8px 0 16px">${esc(t('cmp_window',{a:fmtDate(anyWin.cur[0],true), b:fmtDate(anyWin.end,true), n:N}))}</p>`;
+  // --- summary cards ---
+  const sumKeys = [['ga_users','c_visitors'],['gsc_clicks','c_gclicks'],['ads_earnings','c_earn']];
+  html += `<div class="sumcards">${sites.map((s,i)=>{ const h=healthOf(s.id);
+    return `<a class="sumcard" href="#site/${esc(s.id)}"><div class="row" style="justify-content:space-between;gap:8px"><div class="sitename"><i style="background:${colors[i]}"></i>${esc(s.name)}</div><span class="pill ${h.cls}">${esc(h.text)}</span></div>
+      <div class="sumstats">${sumKeys.map(([k,l])=>{ const c=calc[k]; const p=c?.per[i]; const row=CMP_ROWS.flatMap(g=>g.rows).find(r=>r.k===k);
+        return `<div><div class="l">${t(l)}</div><div class="v">${p&&p.cur!==null?esc(fmtVal(k,p.cur,true)):'<span class="muted">—</span>'}</div>${p&&p.cur!==null?changeHtml(row,p.cur,p.prev):''}</div>`; }).join('')}</div></a>`; }).join('')}</div>`;
+  // --- scoreboard ---
+  const multi = sites.length>1;
+  html += `<div class="card"><h2>${t('cmp_board')}</h2><p class="sub small">${t('cmp_board_sub')}</p><div class="tablewrap"><table class="board"><thead><tr><th></th>${sites.map((s,i)=>`<th><span class="sitename"><i style="background:${colors[i]}"></i>${esc(s.name)}</span></th>`).join('')}${multi?`<th>${t('total')}</th>`:''}</tr></thead><tbody>`;
+  CMP_ROWS.forEach(g=>{
+    html += `<tr class="grp"><td colspan="${sites.length+1+(multi?1:0)}">${t(g.group)}</td></tr>`;
+    g.rows.forEach(row=>{
+      const c = calc[row.k];
+      html += `<tr><th scope="row"><div class="rl">${t(row.label)}</div><div class="rh">${t(row.hint)}</div></th>`;
+      if(!c){ html += sites.map(()=>`<td class="muted small">${t('not_connected')}</td>`).join('') + (multi?'<td></td>':'') + '</tr>'; return; }
+      const vals = c.per.map(p=>p.cur).filter(v=>v!==null);
+      // mark a winner only when it is clearly ahead of the runner-up (>2%)
+      let best = null;
+      if(vals.length>1){ const sorted = vals.slice().sort((x,y)=> row.lower ? x-y : y-x); const gap = Math.abs(sorted[0]-sorted[1]) / (Math.abs(sorted[1])||1);
+        if(gap>0.02) best = sorted[0]; }
+      const max = Math.max(0,...vals);
+      const showBar = row.agg==='sum' || row.agg==='avg';
+      c.per.forEach((p,i)=>{
+        if(p.cur===null){ html += `<td class="muted small">${t('not_connected')}</td>`; return; }
+        const isBest = best!==null && p.cur===best;
+        html += `<td><div class="cv">${esc(fmtVal(row.k,p.cur,true))}${isBest?` <span class="best">${t(row.lower?'best_low':'best')}</span>`:''}</div>${changeHtml(row,p.cur,p.prev)}`;
+        if(showBar && max>0) html += `<div class="bar"><span style="width:${Math.max(2,p.cur/max*100).toFixed(1)}%;background:${colors[i]}"></span></div>`;
+        html += sparkline(p.spark, colors[i], row.lower) + `</td>`;
+      });
+      if(multi) html += `<td class="tot">${c.total.cur!==null?`<div class="cv">${esc(fmtVal(row.k,c.total.cur,true))}</div>${changeHtml(row,c.total.cur,c.total.prev)}`:'—'}</td>`;
+      html += `</tr>`;
+    });
+  });
+  // health group from the latest check
+  html += `<tr class="grp"><td colspan="${sites.length+1+(multi?1:0)}">${t('g_health')}</td></tr>`;
+  const hrows = [['c_speed','h_speed','speed'],['c_ssl','h_ssl','ssl'],['c_index','h_index','idx'],['c_adstxt','h_adstxt','ads']];
+  const cells = sites.map(s=>statusCells(checkFor(s.id)));
+  hrows.forEach(([l,h,key])=>{ html += `<tr><th scope="row"><div class="rl">${t(l)}</div><div class="rh">${t(h)}</div></th>${cells.map(c=>`<td>${c[key]}</td>`).join('')}${multi?'<td></td>':''}</tr>`; });
+  html += `</tbody></table></div><p class="small muted" style="margin:10px 0 0">${t('cmp_note')}</p></div>`;
+  // --- detailed trend ---
+  html += `<div class="card"><h2>${t('cmp_trend')}</h2><div class="chips">${CHIP_METRICS.map(k=>`<button class="chip ${view.metric===k?'on':''}" data-m="${k}">${t(CHIP_LABEL[k])}</button>`).join('')}</div><div id="cmpChart"></div></div>`;
+  m.innerHTML = html;
+  const draw = ()=>{
+    const dates = dateRange(Math.max(N,28));
+    const series = sites.map((s,i)=>({name:s.name, color:colors[i], points:Object.fromEntries(dates.map(d=>[d, METRICS_DATA[s.id]?.[d]?.[view.metric]]).filter(([d,v])=>v!==undefined))}));
+    lineChart($('#cmpChart'), {series, dates, fmt:(v,c)=>fmtVal(view.metric,v,c), yLabel:t('m_'+view.metric), invert:!!METRICS[view.metric].lower, minZero:!METRICS[view.metric].lower});
+  };
+  m.querySelectorAll('.chip').forEach(b=>b.addEventListener('click', ()=>{ view.metric=b.dataset.m; saveView(); m.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b)); draw(); }));
+  m.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click', ()=>{ view.range=+b.dataset.r; saveView(); renderCompare(m); }));
+  if(!CHIP_METRICS.includes(view.metric)) view.metric='gsc_clicks';
+  draw();
+}
+
+// ---------------- site detail ----------------
+function cwv(v, good, poor, fmt){ if(!v && v!==0) return '<span class="muted">—</span>'; const cls = v<=good?'good':v<=poor?'warn':'bad'; return stDot(cls, fmt(v)); }
+function scoreRing(v, label){ if(v===undefined||v===null) return ''; const c = v>=90?'var(--good)':v>=50?'var(--warning)':'var(--critical)'; const r=26, C=2*Math.PI*r;
+  return `<div class="ring"><svg width="70" height="70" viewBox="0 0 70 70"><circle cx="35" cy="35" r="${r}" fill="none" stroke="var(--grid)" stroke-width="6"/><circle cx="35" cy="35" r="${r}" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${(v/100*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 35 35)"/><text x="35" y="40" text-anchor="middle" font-size="18" font-weight="700" fill="var(--ink)">${Math.round(v)}</text></svg><div class="small">${label}</div></div>`; }
+function speedCard(sc, s){
+  const ps = sc?.status?.psi; const tm = sc?.status?.http?.timing; const warm = sc?.status?.http?.warm;
+  if(!ps && !tm) return '';
+  let html = `<div class="card"><h2>${t('sp_title')}</h2>`;
+  if(ps){
+    const mob = ps.mobile||{}, desk = ps.desktop||{};
+    if(mob.error && desk.error) html += `<p class="small">${stDot('warn', mob.error==='quota'?t('sp_quota'):mob.error)}</p>`;
+    else {
+      html += `<div class="row" style="gap:24px;align-items:flex-start">${scoreRing(mob.error?null:mob.score, t('sp_mobile'))}${scoreRing(desk.error?null:desk.score, t('sp_desktop'))}
+        <div class="grow"><table class="cwv"><thead><tr><th></th><th>${t('sp_field')}</th><th>${t('sp_lab')}</th></tr></thead><tbody>
+        <tr><td><b>LCP</b><div class="small muted">${t('sp_lcp')}</div></td><td>${cwv(mob.fieldLcp?mob.fieldLcp/1000:null,2.5,4,v=>v.toFixed(1)+' s')}</td><td>${cwv(mob.lcp?mob.lcp/1000:null,2.5,4,v=>v.toFixed(1)+' s')}</td></tr>
+        <tr><td><b>INP</b><div class="small muted">${t('sp_inp')}</div></td><td>${cwv(mob.fieldInp||null,200,500,v=>Math.round(v)+' ms')}</td><td><span class="small muted">TBT ${mob.tbt?Math.round(mob.tbt)+' ms':'—'}</span></td></tr>
+        <tr><td><b>CLS</b><div class="small muted">${t('sp_cls')}</div></td><td>${cwv(mob.fieldLcp?mob.fieldCls:null,0.1,0.25,v=>v.toFixed(2))}</td><td>${cwv(mob.lcp?mob.cls:null,0.1,0.25,v=>v.toFixed(2))}</td></tr></tbody></table>
+        <p class="small muted" style="margin:6px 0 0">${t(mob.fieldLcp?'sp_field_help':'sp_no_field')}</p></div></div>
+        <p style="margin:10px 0 0"><a class="btn sm" target="_blank" rel="noopener" href="https://pagespeed.web.dev/analysis?url=${encodeURIComponent(ps.url||s.url)}">${t('sp_details')} ↗</a></p>`;
+    }
+  }
+  if(tm) html += timingHtml(tm, warm);
+  return html + `</div>`;
+}
+function timingHtml(tm, warm){
+  const net = tm.dns+tm.connect+tm.tls;
+  const segs = [['tm_dns',tm.dns,'--s7'],['tm_connect',tm.connect,'--s5'],['tm_tls',tm.tls,'--s2'],['tm_server',tm.server,'--s1'],['tm_download',tm.download,'--s3']].filter(x=>x[1]>0);
+  const tot = Math.max(1, segs.reduce((a,x)=>a+x[1],0));
+  const biggest = net >= tm.server && net >= tm.download ? 'net' : tm.server >= tm.download ? 'server' : 'download';
+  return `<h3>${t('tm_title')}</h3><div class="tmbar">${segs.map(([k,v,c])=>`<span style="width:${(v/tot*100).toFixed(2)}%;background:var(${c})" title="${esc(t(k))}: ${v} ms"></span>`).join('')}</div>
+    <div class="legend" style="margin-top:6px">${segs.map(([k,v,c])=>`<span><i style="background:var(${c});height:8px;width:8px;border-radius:2px"></i>${t(k)} <b>${v} ms</b></span>`).join('')}</div>
+    <p class="small" style="margin:6px 0 0">${t('tm_total',{n:tm.total})}${tm.redirects?' · '+t('lk_hops',{n:tm.redirects}):''}${warm?' · '+t('tm_warm',{t:warm.ttfb, n:warm.total}):''}</p>
+    ${tm.total < 600 ? `<div class="how" style="margin-top:8px">${t('tm_fast')}</div>` : `<div class="how" style="margin-top:8px"><b>${t('tm_main_'+biggest)}</b> ${t('tm_hint_'+biggest)}</div>`}`;
+}
+function renderSite(m, id){
+  const s = (S.sites||[]).find(x=>x.id===id);
+  if(!s){ location.hash='#overview'; return; }
+  const sc = checkFor(id); const md = METRICS_DATA[id]||{};
+  const st = sc?.status||{};
+  const kpiKeys = ['ga_users','ga_views','gsc_clicks','gsc_impr','gsc_ctr','gsc_pos','ads_earnings','ads_rpm','bing_clicks','psi_m_score','http_ttfb'];
+  let html = `<p><a href="#overview">${t('back')}</a></p><div class="row" style="justify-content:space-between"><div><h1>${esc(s.name)}</h1><p class="sub"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></p></div>${historySel()}</div>`;
+  const siteAlerts = (RUN?.alerts||[]).filter(a=>a.siteId===id);
+  html += `<div class="card"><h2>${t('alerts')}</h2>${RUN?alertsHtml(siteAlerts,{showIgnored:SHOW_IGNORED}):`<div class="muted">${t('no_data')}</div>`}</div>`;
+  html += `<div class="card"><h2>${t('trend')}</h2><div class="kpis">${kpiKeys.map(k=>{ const l=latest(md,k); return `<div class="kpi ${view.siteMetric===k?'on':''}" data-k="${k}" role="button" tabindex="0"><div class="l">${t('m_'+k)}</div><div class="v">${l?esc(fmtVal(k,l.v)):'—'}</div>${l?deltaHtml(k,l):''}</div>`; }).join('')}</div>
+    <div class="row" style="margin:14px 0 8px"><b>${esc(t('m_'+view.siteMetric))}</b><span class="grow"></span>${rangeSeg(view.range,'r')}</div><div id="siteChart"></div></div>`;
+  // checks
+  const h = st.http||{}, rb = st.robots, sm = st.sitemap, at = st.adstxt, dm = st.domain;
+  const c = (title, body) => `<div class="check"><div class="t">${title}</div>${body}</div>`;
+  let checks = '';
+  checks += c(t('http'), st.http ? (h.ok ? stDot('good', `HTTP ${h.status} · ${h.ms} ms`) : stDot('bad', (h.status?'HTTP '+h.status:'')+' '+(h.error||''))) + (h.final && h.final!==s.url ? `<div class="small muted">→ ${esc(h.final)}</div>`:'') : stDot('na', t('not_checked')));
+  checks += c(t('ssl_exp'), h.sslDays!==undefined ? stDot(h.sslDays<(S.sslWarn||14)?'warn':'good', t('expires_in',{n:h.sslDays, d:fmtDate(h.sslExpiry.slice(0,10),true)})) + (h.sslIssuer?`<div class="small muted">${esc(h.sslIssuer)}</div>`:'') : stDot('na', t('not_checked')));
+  checks += c(t('domain_exp'), dm ? (dm.days!==undefined ? stDot(dm.days<(S.domainWarn||30)?'warn':'good', t('expires_in',{n:dm.days, d:fmtDate(dm.expiry.slice(0,10),true)})) : stDot('na', t('unavailable'))) + `<div class="small muted">${esc(dm.domain)}</div>` : stDot('na', t('not_checked')));
+  checks += c(t('robots'), rb ? (rb.blocksAll ? stDot('bad', t('blocks_all')) : rb.ok ? stDot('good', t('ok')) : stDot('warn', t('missing')+(rb.status?' (HTTP '+rb.status+')':''))) : stDot('na', t('not_checked')));
+  checks += c(t('sitemap'), sm ? (sm.ok ? stDot('good', t('urls',{n:(sm.urls||0).toLocaleString(locale())})) : stDot('warn', t('missing'))) + `<div class="small muted mono">${esc(sm.url)}</div>` : stDot('na', t('not_checked')));
+  if(at) checks += c(t('adstxt'), at.ok ? stDot('good', t('ok')+(at.pubId?' · '+at.pubId:'')) : at.found===false ? stDot('bad', t('missing')) : stDot('bad', t('mismatch')+(at.pubId?' · '+at.pubId:'')));
+  const lk = st.links; if(lk) checks += c(t('pg_tab_links'), `<a href="#pages/links">${lk.broken ? stDot(lk.brokenInternal?'bad':'warn', t('a_broken_links',{n:lk.broken})) : stDot('good', t('lk_none',{n:lk.checked}))}</a>`);
+  const pgs = sc?.gsc?.pages; if(pgs) checks += c(t('pg_tab_index'), `<a href="#pages/index">${stDot(pgs.slow?'warn':'good', t('rp_h_index',{i:pgs.indexed,n:pgs.total,s:pgs.slow||0}))}</a>`);
+  if(sc?.adsense?.state) checks += c(t('ads_site'), stDot(sc.adsense.state==='READY'?'good':sc.adsense.state==='NEEDS_ATTENTION'?'bad':'warn', stName(sc.adsense.state)));
+  html += `<div class="card"><h2>${t('site_checks')}</h2><div class="checks">${checks}</div>`;
+  html += `</div>` + speedCard(sc, s);
+  const sms = sc?.gsc?.sitemaps, ins = sc?.gsc?.inspections;
+  if(sms?.length || ins?.length) html += `<div class="card"><h2>Search Console</h2>`;
+  if(sms?.length){
+    html += `<h3>${t('gsc_sitemaps')}</h3><div class="tablewrap"><table><thead><tr><th>URL</th><th class="num">${t('submitted')}</th><th>${t('last_read')}</th><th class="num">${t('errors')}</th><th class="num">${t('warnings')}</th></tr></thead><tbody>${sms.map(x=>`<tr><td class="mono">${esc(x.path)}</td><td class="num">${(x.submitted||0).toLocaleString(locale())}</td><td>${x.lastDownloaded?esc(new Date(x.lastDownloaded).toLocaleDateString(locale())):'—'}</td><td class="num">${x.errors?`<span class="st bad"><i></i>${x.errors}</span>`:'0'}</td><td class="num">${x.warnings||0}</td></tr>`).join('')}</tbody></table></div>`;
+  }
+  if(ins?.length){
+    html += `<h3>${t('inspections')}</h3><div class="tablewrap"><table><thead><tr><th>URL</th><th>${t('verdict')}</th><th>${t('coverage')}</th><th>${t('last_crawl')}</th></tr></thead><tbody>${ins.map(x=>`<tr><td class="mono">${esc(x.url)}</td><td>${x.error?stDot('warn', x.error):stDot(x.verdict==='PASS'?'good':'warn', x.verdict||'—')}</td><td>${esc(x.coverage||'')}</td><td>${x.lastCrawl?esc(new Date(x.lastCrawl).toLocaleString(locale())):'—'}</td></tr>`).join('')}</tbody></table></div>`;
+  }
+  if(sms?.length || ins?.length) html += `</div>`;
+  m.innerHTML = html;
+  const draw = ()=>{ const dates=dateRange(view.range); const k=view.siteMetric;
+    lineChart($('#siteChart'), {series:[{name:t('m_'+k), color:cssVar('--s1'), points:Object.fromEntries(dates.map(d=>[d,md[d]?.[k]]).filter(([d,v])=>v!==undefined))}], dates, fmt:(v,c)=>fmtVal(k,v,c), yLabel:t('m_'+k), invert:!!METRICS[k].lower, minZero:!METRICS[k].lower}); };
+  m.querySelectorAll('.kpi').forEach(el=>{ const go=()=>{ view.siteMetric=el.dataset.k; saveView(); renderSite(m,id); }; el.addEventListener('click',go); el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } }); });
+  m.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click', ()=>{ view.range=+b.dataset.r; saveView(); renderSite(m,id); }));
+  bindHistory(m);
+  bindAlerts(m);
+  draw();
+}
+
+// ---------------- keywords ----------------
+let TRENDS = [];
+async function renderKeywords(m){
+  const gscSites = (S.sites||[]).filter(s=>s.gscProperty);
+  if(!gscSites.find(s=>s.id===view.kwSite)) view.kwSite = gscSites[0]?.id || '';
+  TRENDS = await api('/api/trends');
+  if(view.trSel===null) view.trSel = TRENDS.slice(0,4).map(x=>x.id);
+  view.trSel = view.trSel.filter(id=>TRENDS.some(x=>x.id===id));
+  m.innerHTML = `<h1>${t('kw_title')}</h1><p class="sub">${t('kw_sub')}</p>
+  ${gscSites.length?`<div class="card"><h2>${t('tr_title')}</h2><p class="sub small">${t('tr_help')}</p><div id="trackBox"><span class="spin"></span></div><div class="row" style="margin-top:10px"><input type="text" id="trAdd" placeholder="${esc(t('tr_add_ph'))}" style="flex:1;max-width:360px"><button class="btn" id="trAddBtn">${t('tr_add')}</button></div></div>`:''}
+  <div class="card">${gscSites.length ? `<div class="row" style="margin-bottom:12px"><label class="row">${t('site')} <select id="kwSite">${gscSites.map(s=>`<option value="${esc(s.id)}" ${s.id===view.kwSite?'selected':''}>${esc(s.name)}</option>`).join('')}</select></label>${rangeSeg(view.kwRange,'kr')}<button class="btn" id="kwLoad">${t('load')}</button></div><div id="kwTable"></div>` : `<div class="muted">${t('no_gsc_sites')}</div>`}</div>
+  <div class="card" id="kwChartCard" style="display:none"><div class="row" style="margin-bottom:10px"><h2 style="margin:0">${t('kw_chart')}</h2><span class="grow"></span><div class="seg">${['clicks','impressions','position'].map(k=>`<button data-km="${k}" class="${view.kwMetric===k?'on':''}">${t(k)}</button>`).join('')}</div></div><div id="kwChart"></div></div>
+  <div class="card"><h2>${t('trends_title')}</h2><p class="sub small">${t('trends_help')}</p>
+   <div class="drop" id="drop" tabindex="0" role="button">${t('drop_csv')}</div><input type="file" id="csvIn" accept=".csv,text/csv" multiple hidden>
+   <div id="trList" style="margin-top:12px"></div>
+   <label class="row small" style="margin:8px 0"><input type="checkbox" id="overlay" ${view.overlay?'checked':''}> ${t('overlay')}</label>
+   <div id="trChart"></div><p class="small muted">${t('trends_note')}</p></div>`;
+  if(gscSites.length){
+    $('#kwSite').addEventListener('change', e=>{ view.kwSite=e.target.value; view.kwRows=null; view.kwSel=[]; view.kwSeries=null; saveView(); loadKw(); loadTracked(); });
+    m.querySelectorAll('[data-kr]').forEach(b=>b.addEventListener('click', ()=>{ view.kwRange=+b.dataset.kr; m.querySelectorAll('[data-kr]').forEach(x=>x.classList.toggle('on', x===b)); saveView(); loadKw(); }));
+    $('#kwLoad').addEventListener('click', loadKw);
+    loadTracked();
+    const addTr = async ()=>{ const q=$('#trAdd').value.trim(); if(!q) return; $('#trAdd').value=''; await setTracked(q,true); };
+    $('#trAddBtn').addEventListener('click', addTr); $('#trAdd').addEventListener('keydown', e=>{ if(e.key==='Enter') addTr(); });
+    if(view.kwRows) drawKwTable(); else loadKw();
+  }
+  m.querySelectorAll('[data-km]').forEach(b=>b.addEventListener('click', ()=>{ view.kwMetric=b.dataset.km; m.querySelectorAll('[data-km]').forEach(x=>x.classList.toggle('on',x===b)); saveView(); drawKwChart(); drawTrends(); }));
+  const drop=$('#drop'), inp=$('#csvIn');
+  drop.addEventListener('click', ()=>inp.click()); drop.addEventListener('keydown', e=>{ if(e.key==='Enter') inp.click(); });
+  drop.addEventListener('dragover', e=>{ e.preventDefault(); drop.classList.add('over'); });
+  drop.addEventListener('dragleave', ()=>drop.classList.remove('over'));
+  drop.addEventListener('drop', e=>{ e.preventDefault(); drop.classList.remove('over'); importCsv([...e.dataTransfer.files]); });
+  inp.addEventListener('change', ()=>importCsv([...inp.files]));
+  $('#overlay').addEventListener('change', e=>{ view.overlay=e.target.checked; saveView(); drawTrends(); });
+  drawTrendList(); drawTrends(); if(view.kwSeries) drawKwChart();
+}
+let TRACKED = {};
+async function loadTracked(){
+  const box = $('#trackBox'); if(!box) return;
+  try{ TRACKED = await api('/api/tracked?site='+encodeURIComponent(view.kwSite)); }catch(e){ box.textContent = t('err',{e:e.message}); return; }
+  const list = TRACKED.tracked||[];
+  if(!list.length){ box.innerHTML = `<div class="muted small">${t('tr_none')}</div>`; if(view.kwRows) drawKwTable(); return; }
+  const td = today();
+  const rows = list.map(q=>{
+    const m = TRACKED.data?.[q]||{}; const ds = Object.keys(m).filter(d=>d<td).sort();
+    const wavg = arr => { let sp=0, si=0; arr.forEach(d=>{ const w=m[d].i||1; sp+=m[d].p*w; si+=w; }); return si?sp/si:null; };
+    const cur = ds.length? wavg(ds.slice(-3)) : null, prev = ds.length>5 ? wavg(ds.slice(-10,-3)) : null;
+    const clicks7 = ds.slice(-7).reduce((a,d)=>a+(m[d].c||0),0);
+    const last30 = dateRange(30); const spark = sparkline(last30.map(d=>m[d]?.p), cssVar('--s1'), true);
+    let ch = `<span class="chg flat">—</span>`;
+    if(cur!==null && prev!==null){ const diff = prev-cur; ch = Math.abs(diff)<0.1 ? `<span class="chg flat">${t('same')}</span>` : `<span class="chg ${diff>0?'up':'down'}">${diff>0?'▲':'▼'} ${t(diff>0?'pos_up':'pos_down',{n:Math.abs(diff).toFixed(1)})}</span>`; }
+    return `<tr><td><b>${esc(q)}</b></td><td class="num"><span class="cv">${cur!==null?cur.toFixed(1):'—'}</span></td><td>${ch}</td><td class="num">${clicks7.toLocaleString(locale())}</td><td>${spark||`<span class="small muted">${t('tr_no_data')}</span>`}</td><td><button class="btn sm ghost" data-untrack="${esc(q)}">${t('remove')}</button></td></tr>`;
+  });
+  box.innerHTML = `<div class="tablewrap"><table><thead><tr><th>${t('query')}</th><th class="num">${t('tr_pos')}</th><th>${t('tr_change')}</th><th class="num">${t('tr_clicks7')}</th><th>${t('tr_30d')}</th><th></th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+  box.querySelectorAll('[data-untrack]').forEach(b=>b.addEventListener('click', ()=>setTracked(b.dataset.untrack,false)));
+  if(view.kwRows) drawKwTable();
+}
+async function setTracked(q, on){
+  try{ await api('/api/track',{method:'POST',json:{site:view.kwSite, query:q, on}}); await loadState(); }catch(e){ toast(t('err',{e:e.message})); }
+  loadTracked();
+}
+function kwDates(){ const end = addDays(new Date(), -2); const out=[]; for(let i=view.kwRange-1;i>=0;i--) out.push(ds(addDays(end,-i))); return out; }
+async function loadKw(){
+  const el = $('#kwTable'); if(!el) return; el.innerHTML = `<div class="muted"><span class="spin"></span> ${t('loading')}</div>`;
+  const d = kwDates();
+  try{ view.kwRows = await api(`/api/gsc/queries?site=${encodeURIComponent(view.kwSite)}&start=${d[0]}&end=${d[d.length-1]}&limit=200`); view.kwSel = view.kwSel.filter(q=>(view.kwRows.rows||[]).some(r=>r.keys[0]===q)); drawKwTable(); if(view.kwSel.length) loadKwSeries(); else { view.kwSeries=null; $('#kwChartCard').style.display='none'; } }
+  catch(e){ el.innerHTML = esc(t('err',{e:e.message})); }
+}
+function drawKwTable(){
+  const el=$('#kwTable'); const rows = view.kwRows?.rows||[]; const prev = view.kwRows?.prev||{};
+  if(!rows.length){ el.innerHTML=`<div class="muted">${t('no_data')}</div>`; return; }
+  el.innerHTML = `<p class="small muted">${t('kw_pick')}</p><div class="tablewrap" style="max-height:440px;overflow-y:auto"><table><thead><tr><th></th><th title="${esc(t('tr_title'))}">★</th><th>${t('query')}</th><th class="num">${t('clicks')}</th><th class="num">${t('change')}</th><th class="num">${t('impressions')}</th><th class="num">${t('ctr')}</th><th class="num">${t('position')}</th></tr></thead><tbody>${rows.map(r=>{
+    const q=r.keys[0], p=prev[q]; let ch;
+    if(!p) ch = `<span class="tag">${t('new_q')}</span>`; else if(p.clicks>0){ const pct=(r.clicks-p.clicks)/p.clicks*100; ch=`<span class="delta ${pct>0?'up':pct<0?'down':'flat'}">${pct>0?'▲':pct<0?'▼':''} ${fmtPct(pct)}</span>`; } else ch = r.clicks>0 ? `<span class="delta up">▲</span>` : '—';
+    const tracked = (TRACKED.tracked||[]).includes(q);
+    return `<tr><td><input type="checkbox" data-q="${esc(q)}" ${view.kwSel.includes(q)?'checked':''} aria-label="${esc(q)}"></td><td><button class="star ${tracked?'on':''}" data-star="${esc(q)}" title="${esc(t(tracked?'tr_remove':'tr_add'))}" aria-label="${esc(t(tracked?'tr_remove':'tr_add'))}">${tracked?'★':'☆'}</button></td><td>${esc(q)}</td><td class="num">${r.clicks.toLocaleString(locale())}</td><td class="num">${ch}</td><td class="num">${r.impressions.toLocaleString(locale())}</td><td class="num">${(r.ctr*100).toFixed(1)}%</td><td class="num">${r.position.toFixed(1)}${p&&Math.abs(p.position-r.position)>=0.05?`<span class="delta ${p.position>r.position?'up':p.position<r.position?'down':'flat'}">${p.position>r.position?'▲':p.position<r.position?'▼':''} ${Math.abs(p.position-r.position).toFixed(1)}</span>`:''}</td></tr>`; }).join('')}</tbody></table></div>`;
+  el.querySelectorAll('[data-star]').forEach(b=>b.addEventListener('click', ()=>setTracked(b.dataset.star, !b.classList.contains('on'))));
+  el.querySelectorAll('input[data-q]').forEach(cb=>cb.addEventListener('change', ()=>{
+    const q=cb.dataset.q; if(cb.checked){ if(view.kwSel.length>=5){ cb.checked=false; return; } view.kwSel.push(q); } else view.kwSel=view.kwSel.filter(x=>x!==q);
+    saveView(); if(view.kwSel.length) loadKwSeries(); else { view.kwSeries=null; $('#kwChartCard').style.display='none'; drawTrends(); } }));
+}
+async function loadKwSeries(){
+  const d = kwDates();
+  try{ view.kwSeries = await api('/api/gsc/series',{method:'POST',json:{site:view.kwSite,start:d[0],end:d[d.length-1],queries:view.kwSel}}); drawKwChart(); drawTrends(); }
+  catch(e){ toast(t('err',{e:e.message})); }
+}
+function kwPoints(q, metric){ const src = view.kwSeries?.[q]||{}; const o={}; kwDates().forEach(d=>{ const r=src[d]; if(r) o[d]=r[metric]; else if(metric!=='position') o[d]=0; }); return o; }
+function drawKwChart(){
+  const card=$('#kwChartCard'); if(!card) return; if(!view.kwSeries||!view.kwSel.length){ card.style.display='none'; return; }
+  card.style.display='';
+  const mk = view.kwMetric, dates = kwDates();
+  const series = view.kwSel.map((q,i)=>({name:q, color:cssVar(SERIES_VARS[i]), points:kwPoints(q,mk)}));
+  const fmt = mk==='position' ? (v=>v.toFixed(1)) : ((v,c)=>fmtVal('gsc_clicks',v,c));
+  lineChart($('#kwChart'), {series, dates, fmt, invert: mk==='position', minZero: mk!=='position'});
+}
+async function importCsv(files){
+  for(const f of files){
+    try{ const r = await api('/api/trends/import',{method:'POST',body:await f.arrayBuffer(),headers:{'X-File-Name':encodeURIComponent(f.name)}}); toast(t('imported',{n:r.count})); }
+    catch(e){ toast(t('err',{e:e.message==='not_trends_csv'?'CSV':e.message})); }
+  }
+  TRENDS = await api('/api/trends'); view.trSel = Array.from(new Set([...(view.trSel||[]), ...TRENDS.slice(0,4).map(x=>x.id)])).slice(0,8); saveView(); drawTrendList(); drawTrends();
+}
+function drawTrendList(){
+  const el=$('#trList'); if(!el) return;
+  if(!TRENDS.length){ el.innerHTML=`<div class="muted small">${t('trends_none')}</div>`; return; }
+  el.innerHTML = `<div class="row">${TRENDS.map(x=>`<span class="tag"><label class="row" style="gap:4px"><input type="checkbox" data-tr="${esc(x.id)}" ${view.trSel.includes(x.id)?'checked':''}>${esc(x.term)}${x.geo?` <span class="muted">(${esc(x.geo)})</span>`:''}</label><button class="btn sm" style="border:0;padding:0 4px" data-del="${esc(x.id)}" title="${t('del')}" aria-label="${t('del')}">×</button></span>`).join('')}</div>`;
+  el.querySelectorAll('[data-tr]').forEach(cb=>cb.addEventListener('change', ()=>{ const id=cb.dataset.tr; if(cb.checked){ if(view.trSel.length>=6){ cb.checked=false; return; } view.trSel.push(id); } else view.trSel=view.trSel.filter(x=>x!==id); saveView(); drawTrends(); }));
+  el.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click', async ()=>{ await api('/api/trends/delete',{method:'POST',json:{id:b.dataset.del}}); TRENDS = await api('/api/trends'); view.trSel=view.trSel.filter(x=>x!==b.dataset.del); saveView(); drawTrendList(); drawTrends(); }));
+}
+function drawTrends(){
+  const el=$('#trChart'); if(!el) return;
+  const sel = TRENDS.filter(x=>view.trSel.includes(x.id));
+  const overlay = view.overlay && view.kwSeries && view.kwSel.length;
+  if(!sel.length && !overlay){ el.innerHTML=''; return; }
+  let dates = Array.from(new Set(sel.flatMap(x=>Object.keys(x.points)))).sort();
+  const series = sel.map((x,i)=>({name:x.term+(x.geo?` (${x.geo})`:''), color:cssVar(SERIES_VARS[i%8]), points:x.points}));
+  if(overlay){
+    const kd = kwDates();
+    if(!dates.length) dates = kd;
+    // weekly Trends data: bucket daily clicks into the Trends periods
+    const weekly = dates.length>1 && (new Date(dates[1]) - new Date(dates[0])) > 2*864e5;
+    view.kwSel.forEach((q,i)=>{
+      const daily = kwPoints(q,'clicks'); let pts={};
+      // daily mean per Trends period, so partial weeks at the edges are not under-counted
+      if(weekly){ const per = Math.round((new Date(dates[1]) - new Date(dates[0]))/864e5); dates.forEach((d,j)=>{ const next=dates[j+1]||ds(addDays(new Date(d+'T00:00:00'), per)); let sum=0, n=0; kd.forEach(k=>{ if(k>=d && k<next){ sum+=daily[k]||0; n++; } }); if(n) pts[d]=sum/n; }); }
+      else pts = daily;
+      const mx = Math.max(0,...Object.values(pts)); if(mx>0) Object.keys(pts).forEach(k=>pts[k]=pts[k]/mx*100);
+      series.push({name:'GSC: '+q, color:cssVar(SERIES_VARS[(sel.length+i)%8]), dash:true, points:pts});
+    });
+    if(!weekly) dates = Array.from(new Set([...dates, ...kd])).sort();
+  }
+  lineChart(el, {series, dates, fmt:v=>Math.round(v).toString(), yLabel:t('interest')});
+}
+
+// ---------------- pages: index tracking, top pages, link check ----------------
+let PAGES = {};
+function pagesTabs(cur){
+  return `<div class="seg" style="margin-bottom:14px">${[['index','pg_tab_index'],['top','pg_tab_top'],['links','pg_tab_links']].map(([k,l])=>`<button data-tab="${k}" class="${cur===k?'on':''}">${t(l)}</button>`).join('')}</div>`;
+}
+async function renderPages(m, tab){
+  tab = tab || 'index';
+  const sites = S.sites||[];
+  if(!sites.length){ m.innerHTML = `<h1>${t('nav_pages')}</h1><div class="card empty">${t('no_data')}</div>`; return; }
+  if(!sites.find(x=>x.id===view.pgSite)) view.pgSite = sites[0].id;
+  let html = `<h1>${t('nav_pages')}</h1><div class="row" style="margin:8px 0 14px">${pagesTabs(tab)}<span class="grow"></span><label class="row">${t('site')} <select id="pgSite">${sites.map(x=>`<option value="${esc(x.id)}" ${x.id===view.pgSite?'selected':''}>${esc(x.name)}</option>`).join('')}</select></label></div><div id="pgBody"><div class="muted"><span class="spin"></span> ${t('loading')}</div></div>`;
+  m.innerHTML = html;
+  m.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click', ()=>{ location.hash = '#pages/'+b.dataset.tab; }));
+  $('#pgSite').addEventListener('change', e=>{ view.pgSite=e.target.value; saveView(); renderPages(m, tab); });
+  const body = $('#pgBody');
+  try{
+    if(tab==='index') await renderIndexTab(body);
+    else if(tab==='top') await renderTopTab(body);
+    else if(tab==='links') await renderLinksTab(body);
+  }catch(e){ body.innerHTML = `<div class="card">${esc(t('err',{e:e.message}))}</div>`; }
+}
+async function renderIndexTab(el){
+  const site = (S.sites||[]).find(x=>x.id===view.pgSite);
+  const d = await api('/api/pages?site='+encodeURIComponent(site.id)); PAGES[site.id]=d;
+  const sm = d.summary||{}; const rows = d.pages||[]; const today_=today();
+  const ageDays = p => Math.max(0, Math.round((new Date(today_) - new Date(p.firstSeen))/864e5));
+  const status = p => p.removed ? 'removed' : p.verdict==='PASS' ? 'indexed' : !p.checked ? 'unchecked' : 'notindexed';
+  const filt = {all:()=>true, new:p=>!p.initial && ageDays(p)<=14 && !p.removed, notindexed:p=>!p.removed && status(p)!=='indexed', indexed:p=>status(p)==='indexed'}[view.pgFilter] || (()=>true);
+  const shown = rows.filter(filt);
+  const gsc = site.gscProperty; const enc = encodeURIComponent;
+  const pct = sm.total ? Math.round(sm.indexed/sm.total*100) : 0;
+  let html = `<div class="card"><div class="kpis">
+     <div class="kpi"><div class="l">${t('pg_total')}</div><div class="v">${sm.total||0}</div></div>
+     <div class="kpi"><div class="l">${t('pg_indexed')}</div><div class="v">${sm.indexed||0} <span class="small muted">${pct}%</span></div><div class="small muted">${t('pg_checked',{n:sm.checked||0})}</div></div>
+     <div class="kpi"><div class="l">${t('pg_new')}</div><div class="v">${sm.new||0}</div></div>
+     <div class="kpi"><div class="l">${t('pg_slow')}</div><div class="v" style="color:${sm.slow?'var(--critical)':'inherit'}">${sm.slow||0}</div></div></div>
+     <p class="small muted" style="margin:10px 0 0">${t('pg_index_help')}</p>
+     <div class="row" style="margin-top:10px"><button class="btn" id="pgRefresh">${t('pg_refresh')}</button>${d.updated?`<span class="small muted">${t('last_check')}: ${esc(fmtDate(d.updated,true))}</span>`:''}</div></div>`;
+  // IndexNow
+  const inw = d.indexNow||{};
+  html += `<div class="card"><h2>${t('in_title')}</h2><p class="sub small">${t('in_help')}</p>`;
+  if(!inw.key) html += `<button class="btn primary" id="inKey">${t('in_setup')}</button>`;
+  else if(!inw.verified) html += `<ol class="small" style="margin:0 0 10px;padding-left:18px;line-height:1.9"><li>${t('in_step1')} <a class="btn sm" href="/api/indexnow/keyfile" download>${t('in_download',{f:inw.key+'.txt'})}</a></li><li>${t('in_step2')} <a href="${esc(inw.keyUrl)}" target="_blank" rel="noopener" class="mono">${esc(inw.keyUrl)}</a></li><li>${t('in_step3')}</li></ol><div class="row">${stDot('warn', t('in_not_verified'))}<button class="btn sm" id="inCheck">${t('in_verify')}</button></div>`;
+  else html += `<div class="row">${stDot('good', t('in_verified'))}<span class="small muted">${t('in_auto')}</span><span class="grow"></span><button class="btn" id="inSubmit">${t('in_submit_all')}</button></div>`;
+  html += `</div>`;
+  // Google Search Console: sitemap resubmission + per-page help
+  if(gsc){
+    const gs = d.gscSitemaps||{};
+    html += `<div class="card"><h2>${t('gs_title')}</h2><p class="sub small">${t('gs_help')}</p>`;
+    if(gs.canSubmit) html += `<div class="row">${stDot('good', t('gs_auto'))}<span class="grow"></span>${gs.submitted?`<span class="small muted">${esc(t('gs_last',{d:fmtDate(gs.submitted)}))}</span>`:''}<button class="btn" id="gsSubmit">${t('gs_submit')}</button></div>`;
+    else html += `<div class="row">${stDot('warn', t('gs_need_scope'))}<span class="grow"></span><a class="btn" href="/oauth/start">${t('gs_reconnect')}</a></div>`;
+    html += `<div class="row" style="margin-top:8px"><button class="btn sm" id="gsCopyAll">${t('gs_copy_all')}</button></div></div>`;
+  }
+  // table
+  html += `<div class="card"><div class="row" style="margin-bottom:10px"><div class="seg">${['all','new','notindexed','indexed'].map(k=>`<button data-f="${k}" class="${view.pgFilter===k?'on':''}">${t('pgf_'+k)}</button>`).join('')}</div><span class="small muted">${t('au_n_pages',{n:shown.length})}</span></div>`;
+  if(!rows.length) html += `<div class="muted">${t('pg_none')}</div>`;
+  else html += `<div class="tablewrap" style="max-height:560px;overflow-y:auto"><table><thead><tr><th>URL</th><th>${t('pg_seen')}</th><th>${t('col_status')}</th><th>${t('last_crawl')}</th><th></th></tr></thead><tbody>${shown.slice(0,500).map(p=>{
+      const st = status(p); const cls = {indexed:'good', notindexed: ageDays(p)>7?'bad':'warn', unchecked:'na', removed:'na'}[st];
+      return `<tr><td class="mono" style="word-break:break-all"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.url)}</a>${!p.initial&&ageDays(p)<=14?` <span class="tag">${t('new_q')}</span>`:''}</td>
+        <td class="small">${p.initial?'—':esc(fmtDate(p.firstSeen))+'<div class="muted">'+t('pg_days',{n:ageDays(p)})+'</div>'}</td>
+        <td>${stDot(cls, t('pgs_'+st))}${p.coverage&&st!=='indexed'?`<div class="small muted">${esc(p.coverage)}</div>`:''}${p.submitted?`<div class="small muted">IndexNow ${esc(fmtDate(p.submitted))}</div>`:''}</td>
+        <td class="small">${p.lastCrawl?esc(new Date(p.lastCrawl).toLocaleDateString(locale())):'—'}</td>
+        <td>${gsc&&st!=='indexed'&&st!=='removed'?`<button class="btn sm" data-req="${esc(p.url)}">${t('pg_request')} ↗</button>`:''}</td></tr>`; }).join('')}</tbody></table></div>`;
+  html += `</div>`;
+  el.innerHTML = html;
+  el.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click', ()=>{ view.pgFilter=b.dataset.f; saveView(); renderIndexTab(el); }));
+  $('#pgRefresh',el)?.addEventListener('click', async e=>{ e.target.disabled=true; e.target.innerHTML=`<span class="spin"></span> ${t('loading')}`; try{ await api('/api/pages/refresh',{method:'POST',json:{site:site.id}}); }catch(err){ toast(t('err',{e:err.message})); } renderIndexTab(el); });
+  $('#inKey',el)?.addEventListener('click', async ()=>{ await api('/api/indexnow/key',{method:'POST'}); renderIndexTab(el); });
+  $('#inCheck',el)?.addEventListener('click', ()=>renderIndexTab(el));
+  const gscHome = gsc ? `https://search.google.com/search-console?resource_id=${enc(gsc)}` : '';
+  const copy = async txt => { try{ await navigator.clipboard.writeText(txt); return true; }catch(e){ const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); const ok=document.execCommand('copy'); ta.remove(); return ok; } };
+  el.querySelectorAll('[data-req]').forEach(b=>b.addEventListener('click', async ()=>{ await copy(b.dataset.req); toast(t('gs_copied')); window.open(gscHome, '_blank', 'noopener'); }));
+  $('#gsCopyAll',el)?.addEventListener('click', async ()=>{ const us = rows.filter(p=>!p.removed && status(p)!=='indexed').map(p=>p.url); await copy(us.join('\n')); toast(t('gs_copied_all',{n:us.length})); });
+  $('#gsSubmit',el)?.addEventListener('click', async e=>{ e.target.disabled=true; e.target.innerHTML=`<span class="spin"></span> ${t('loading')}`; try{ const r = await api('/api/gsc/sitemaps/submit',{method:'POST',json:{site:site.id}}); toast(t('gs_submitted',{n:(r.files||[]).length})); }catch(err){ toast(/need_gsc_write/.test(err.message)?t('gs_need_scope'):t('err',{e:err.message})); } renderIndexTab(el); });
+  $('#inSubmit',el)?.addEventListener('click', async e=>{ e.target.disabled=true; try{ const r = await api('/api/indexnow/submit',{method:'POST',json:{site:site.id}}); toast(t('in_submitted',{n:r.count})); }catch(err){ toast(t('err',{e:err.message})); } renderIndexTab(el); });
+}
+async function renderTopTab(el){
+  const site = (S.sites||[]).find(x=>x.id===view.pgSite);
+  const days = view.tpDays||28, sort = view.tpSort||'views';
+  el.innerHTML = `<div class="card"><div class="row"><div class="seg">${[7,28,90].map(n=>`<button data-td="${n}" class="${n===days?'on':''}">${t('d'+n)}</button>`).join('')}</div>
+    <div class="seg">${['views','clicks','up','down'].map(k=>`<button data-ts="${k}" class="${k===sort?'on':''}">${t('tp_s_'+k)}</button>`).join('')}</div></div><div id="tpBody" style="margin-top:12px"><span class="spin"></span> ${t('loading')}</div></div>`;
+  el.querySelectorAll('[data-td]').forEach(b=>b.addEventListener('click', ()=>{ view.tpDays=+b.dataset.td; saveView(); renderTopTab(el); }));
+  el.querySelectorAll('[data-ts]').forEach(b=>b.addEventListener('click', ()=>{ view.tpSort=b.dataset.ts; saveView(); renderTopTab(el); }));
+  let d; try{ d = await api(`/api/toppages?site=${encodeURIComponent(site.id)}&days=${days}`); }catch(e){ $('#tpBody',el).textContent = t('err',{e:e.message}); return; }
+  const hasGA = !!site.gaProperty && !d.errors?.ga;
+  const score = p => hasGA ? p.views : p.clicks, scorePrev = p => hasGA ? p.viewsPrev : p.clicksPrev;
+  let rows = (d.pages||[]).slice();
+  if(sort==='clicks') rows.sort((a,b)=>b.clicks-a.clicks);
+  else if(sort==='up') rows = rows.filter(p=>score(p)>scorePrev(p)).sort((a,b)=>(score(b)-scorePrev(b))-(score(a)-scorePrev(a)));
+  else if(sort==='down') rows = rows.filter(p=>score(p)<scorePrev(p)).sort((a,b)=>(score(a)-scorePrev(a))-(score(b)-scorePrev(b)));
+  rows = rows.slice(0,100);
+  const maxV = Math.max(1,...rows.map(p=>p.views)), maxC = Math.max(1,...rows.map(p=>p.clicks));
+  const chg = (c,pv) => { if(!pv) return c>0?`<span class="chg up">${t('new_q')}</span>`:''; const pct=(c-pv)/pv*100; if(Math.abs(pct)<0.5) return `<span class="chg flat">${t('same')}</span>`; return `<span class="chg ${pct>0?'up':'down'}">${pct>0?'▲':'▼'} ${fmtPct(pct)}</span>`; };
+  const errs = Object.entries(d.errors||{}).map(([k,v])=>`${t('src_'+k)}: ${v}`).join(' · ');
+  $('#tpBody',el).innerHTML = `<p class="small muted" style="margin:0 0 10px">${t('tp_help',{a:fmtDate(d.gaRange[0],true),b:fmtDate(d.gaRange[1],true),c:fmtDate(d.gscRange[0],true),d:fmtDate(d.gscRange[1],true)})}${errs?`<br>${esc(errs)}`:''}</p>` + (rows.length ? `<div class="tablewrap"><table class="tp"><thead><tr><th>#</th><th>${t('tp_page')}</th>${site.gaProperty?`<th>${t('c_views')}</th>`:''}${site.gscProperty?`<th>${t('c_gclicks')}</th><th class="num">${t('c_gimpr')}</th><th class="num">${t('c_pos')}</th>`:''}</tr></thead><tbody>${rows.map((p,i)=>`<tr>
+    <td class="muted">${i+1}</td><td class="mono" style="word-break:break-all;max-width:420px"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.path)}</a></td>
+    ${site.gaProperty?`<td><b>${p.views.toLocaleString(locale())}</b> ${chg(p.views,p.viewsPrev)}<div class="bar"><span style="width:${(p.views/maxV*100).toFixed(1)}%;background:var(--s1)"></span></div></td>`:''}
+    ${site.gscProperty?`<td><b>${p.clicks.toLocaleString(locale())}</b> ${chg(p.clicks,p.clicksPrev)}<div class="bar"><span style="width:${(p.clicks/maxC*100).toFixed(1)}%;background:var(--s3)"></span></div></td><td class="num">${p.impr.toLocaleString(locale())}</td><td class="num">${p.pos?p.pos.toFixed(1):'—'}</td>`:''}</tr>`).join('')}</tbody></table></div>` : `<div class="muted">${t(sort==='up'||sort==='down'?'tp_none_move':'no_data')}</div>`);
+}
+let LINKS_BUSY=false;
+async function renderLinksTab(el){
+  const site = (S.sites||[]).find(x=>x.id===view.pgSite);
+  const ls = await api('/api/links?site='+encodeURIComponent(site.id));
+  let html = `<div class="card"><div class="row"><button class="btn primary" id="lkRun" ${LINKS_BUSY?'disabled':''}>${LINKS_BUSY?`<span class="spin"></span> ${t('lk_running')}`:t(ls?'au_rerun':'au_run')}</button>${ls?`<span class="small muted">${t('last_check')}: ${new Date(ls.time*1000).toLocaleString(locale())} · ${t('lk_stats',{p:ls.pages,n:ls.checked,s:Math.round(ls.durationMs/1000)})}</span>`:''}</div><p class="small muted" style="margin:10px 0 0">${t('lk_help')}</p></div>`;
+  if(ls){
+    const probs = ls.problems||[];
+    const groups = [['broken', false], ['broken', true], ['redirect_chain', false], ['slow', false]];
+    if(!probs.length) html += `<div class="card"><span class="st good"><i></i>${t('lk_none',{n:ls.checked})}</span></div>`;
+    groups.forEach(([kind, ext])=>{
+      const list = probs.filter(p=>p.kind===kind && !!p.external===ext); if(!list.length) return;
+      html += `<div class="card"><h2>${t('lk_'+kind+(ext?'_ext':''))} <span class="small muted">${list.length}</span></h2><p class="sub small">${t('lkh_'+kind+(ext?'_ext':''))}</p><div class="tablewrap" style="max-height:480px;overflow-y:auto"><table><thead><tr><th>URL</th><th>${t('col_status')}</th><th>${t('lk_found_on')}</th></tr></thead><tbody>${list.slice(0,300).map(p=>`<tr>
+        <td class="mono" style="word-break:break-all"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.url)}</a>${p.final&&p.final!==p.url?`<div class="small muted">→ ${esc(p.final)}</div>`:''}</td>
+        <td class="small" style="white-space:nowrap">${p.status?'HTTP '+p.status:esc(p.error||'')}${p.redirects?`<div class="muted">${t('lk_hops',{n:p.redirects})}</div>`:''}${kind==='slow'?`<div class="muted">${(p.ms/1000).toFixed(1)} s</div>`:''}</td>
+        <td class="small mono" style="word-break:break-all">${(p.foundOn||[]).length?(p.foundOn||[]).slice(0,3).map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u)}</a>`).join('<br>'):`<span class="muted">${t('lk_sitemap')}</span>`}</td></tr>`).join('')}</tbody></table></div></div>`;
+    });
+    if(ls.capped) html += `<p class="small muted">${t('lk_capped')}</p>`;
+  }
+  el.innerHTML = html;
+  $('#lkRun',el).addEventListener('click', async ()=>{ LINKS_BUSY=true; renderLinksTab(el); try{ await api('/api/links',{method:'POST',json:{site:site.id}}); }catch(e){ toast(t('err',{e:e.message})); } LINKS_BUSY=false; if(location.hash.startsWith('#pages/links')) renderLinksTab(el); });
+}
+
+// ---------------- AdSense readiness checklist ----------------
+const AUDIT_GROUPS = [
+  ['ag_basic', ['reachable','indexable','mobile','navigation','lang','meta']],
+  ['ag_pages', ['page_privacy','page_about','page_contact','page_terms']],
+  ['ag_content', ['content_count','thin_content','placeholder','sample_broken','dup_titles']],
+  ['ag_ads', ['adsense_code','adstxt','indexed']],
+];
+let AUDIT = {}; let AUDIT_BUSY = false;
+function auditDetail(it){
+  const d = it.detail||{}; const L = u => `<a href="${esc(u)}" target="_blank" rel="noopener" class="mono">${esc(u)}</a>`;
+  const list = (arr, f) => `<details${arr.length<=3?' open':''}><summary class="small">${t('au_n_pages',{n:arr.length})}</summary><ul class="aulist">${arr.slice(0,50).map(f).join('')}</ul></details>`;
+  switch(it.id){
+    case 'reachable': return d.error ? esc(d.error) : d.status ? 'HTTP '+d.status : `${L(d.url)}${d.ms!==undefined?' · '+d.ms+' ms':''}${d.https===false?' · '+t('au_no_https'):''}`;
+    case 'page_privacy': case 'page_about': case 'page_contact': case 'page_terms':
+      return d.url ? `${L(d.url)}${d.broken?' · '+t('au_broken'):d.words!==undefined?' · '+t('au_words',{n:d.words}):''}${d.via==='sitemap'?' · '+t('au_via_sitemap'):''}` : t('au_not_found');
+    case 'content_count': return d.error ? esc(d.error) : t('au_count',{n:d.count});
+    case 'thin_content': return `${t('au_avg_words',{n:d.avg, c:d.checked})}${d.thin?.length? ' · '+t('au_thin_n',{n:d.thin.length, min:d.min}) + list(d.thin, x=>`<li>${L(x.url)} — ${t('au_words',{n:x.words})}</li>`):''}`;
+    case 'placeholder': return d.pages ? list(d.pages, x=>`<li>${L(x.url)} — “${esc(x.text)}”</li>`) : '';
+    case 'sample_broken': return d.pages ? list(d.pages, x=>`<li>${L(x.url)} — ${x.status?'HTTP '+x.status:esc(x.error)}</li>`) : t('au_checked',{n:d.checked||0});
+    case 'dup_titles': return d.groups ? list(d.groups, g=>`<li>“${esc(g.title)}” — ${t('au_n_pages',{n:g.urls.length})}: ${g.urls.slice(0,4).map(L).join(', ')}${g.urls.length>4?' …':''}</li>`) : '';
+    case 'navigation': return t('au_links',{n:d.links||0});
+    case 'lang': return d.lang ? 'lang="'+esc(d.lang)+'"' : '';
+    case 'meta': return d.title ? esc(d.title) : '';
+    case 'adstxt': return d.pubId ? esc(d.pubId) : '';
+    case 'indexed': return d.coverage ? esc(d.coverage) : d.error ? esc(d.error) : d.url ? L(d.url) : '';
+  }
+  return '';
+}
+async function exportAudit(au){
+  const site = (S.sites||[]).find(x=>x.id===au.siteId) || {name:au.siteId, url:''};
+  const plain = h => { const d=document.createElement('div'); d.innerHTML=h; d.querySelectorAll('summary').forEach(x=>x.remove()); d.querySelectorAll('li').forEach(li=>li.append('\n')); return d.textContent.replace(/[ \t]+/g,' ').trim(); };
+  const by = Object.fromEntries((au.items||[]).map(i=>[i.id,i]));
+  const rows = [[t('au_col_group'), t('au_col_item'), t('au_col_result'), t('au_col_detail'), t('au_crit').replace(/[:：]$/,''), t('how_fix').replace(/[:：]$/,'')]];
+  AUDIT_GROUPS.forEach(([g, ids])=>ids.forEach(id=>{ const it=by[id]; if(!it) return;
+    rows.push([t(g), t('au_'+id), t('aus_'+it.status), plain(auditDetail(it)), I18N['auc_'+id]?t('auc_'+id):'', it.status!=='ok'&&it.status!=='skip'&&I18N['auf_'+id]?t('auf_'+id,{pubId:it.detail?.pubId||'pub-xxxxxxxxxxxxxxxx',min:it.detail?.min||300}):'' ]); }));
+  const items = au.items||[]; const sum = [[t('site'), site.name],[ 'URL', site.url],[t('last_check'), new Date(au.time*1000).toLocaleString(locale())],
+    [t('aus_ok'), items.filter(i=>i.status==='ok').length],[t('aus_warn'), items.filter(i=>i.status==='warn').length],[t('aus_fail'), items.filter(i=>i.status==='fail').length],['',''],[t('au_disclaimer'),'']];
+  const name = `Site Pulse AdSense ${site.name} ${ds(new Date(au.time*1000))}`;
+  const res = await fetch('/api/xlsx',{method:'POST',headers:{'X-Site-Pulse':'1','Content-Type':'application/json'},body:JSON.stringify({filename:name, sheets:[{name:t('rp_sheet_summary'),rows:sum},{name:t('nav_audit'),rows}]})});
+  if(!res.ok) throw new Error(res.statusText);
+  const blob = await res.blob(); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name+'.xlsx'; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+async function renderAudit(m){
+  const sites = S.sites||[];
+  if(!sites.length){ m.innerHTML = `<h1>${t('nav_audit')}</h1><div class="card empty">${t('no_data')}</div>`; return; }
+  if(!sites.find(x=>x.id===view.auSite)) view.auSite = sites[0].id;
+  if(!(view.auSite in AUDIT)) AUDIT[view.auSite] = await api('/api/audit?site='+encodeURIComponent(view.auSite));
+  const au = AUDIT[view.auSite];
+  const auSiteObj = sites.find(x=>x.id===view.auSite);
+  let html = `<h1>${t('nav_audit')}<span class="printonly"> · ${esc(auSiteObj?.name||'')}</span></h1><p class="sub">${t('au_intro')}<span class="printonly"><br>${esc(auSiteObj?.url||'')}${au?' · '+t('last_check')+': '+new Date(au.time*1000).toLocaleString(locale()):''}</span></p>
+  <div class="card"><div class="row"><label class="row noprint">${t('site')} <select id="auSite">${sites.map(x=>`<option value="${esc(x.id)}" ${x.id===view.auSite?'selected':''}>${esc(x.name)}</option>`).join('')}</select></label>
+ <button class="btn primary noprint" id="auRun" ${AUDIT_BUSY?'disabled':''}>${AUDIT_BUSY?`<span class="spin"></span> ${t('au_running')}`:t(au?'au_rerun':'au_run')}</button>
+  <span class="grow"></span>${au?`<span class="small muted noprint">${t('last_check')}: ${new Date(au.time*1000).toLocaleString(locale())}</span><button class="btn noprint" id="auPrint">${t('rp_print')}</button><button class="btn noprint" id="auXl">${t('rp_excel')}</button>`:''}</div>`;
+  if(au){
+    const items = au.items||[]; const by = Object.fromEntries(items.map(i=>[i.id,i]));
+    const okN = items.filter(i=>i.status==='ok').length, failN = items.filter(i=>i.status==='fail').length, warnN = items.filter(i=>i.status==='warn').length;
+    const verdict = failN ? 'bad' : warnN ? 'warn' : 'good';
+    html += `<div class="auscore ${verdict}"><div class="big">${okN}<span>/${items.filter(i=>i.status!=='skip').length}</span></div><div><b>${t('au_verdict_'+verdict)}</b><div class="small">${t('au_summary',{f:failN,w:warnN})}</div></div></div></div>`;
+    AUDIT_GROUPS.forEach(([g, ids])=>{
+      const its = ids.map(id=>by[id]).filter(Boolean); if(!its.length) return;
+      html += `<div class="card"><h2>${t(g)}</h2><div class="auitems">${its.map(it=>{
+        const icon = {ok:'✓',warn:'!',fail:'✕',skip:'–'}[it.status];
+        return `<div class="auitem ${it.status}"><div class="auico" aria-hidden="true">${icon}</div><div class="grow"><div class="row" style="gap:8px"><b>${t('au_'+it.id)}</b><span class="small muted">${t('aus_'+it.status)}</span></div>
+          <div class="small aud">${auditDetail(it)}</div>${I18N['auc_'+it.id]?`<div class="aucrit"><b>${t('au_crit')}</b> ${esc(t('auc_'+it.id))}</div>`:''}${it.status!=='ok'&&it.status!=='skip'&&I18N['auf_'+it.id]?`<div class="how"><b>${t('how_fix')}</b> ${esc(t('auf_'+it.id,{pubId:it.detail?.pubId||'pub-xxxxxxxxxxxxxxxx', min:it.detail?.min||300}))}</div>`:''}</div></div>`; }).join('')}</div></div>`;
+    });
+    html += `<p class="small muted">${t('au_note')}</p><p class="small muted">${t('au_disclaimer')}</p>`;
+  } else html += `<p class="muted" style="margin-top:12px">${t('au_never')}</p></div>`;
+  m.innerHTML = html;
+  $('#auSite').addEventListener('change', e=>{ view.auSite=e.target.value; saveView(); renderAudit(m); });
+  $('#auPrint')?.addEventListener('click', ()=>window.print());
+  $('#auXl')?.addEventListener('click', async e=>{ e.target.disabled=true; try{ await exportAudit(au); }catch(err){ toast(t('err',{e:err.message})); } e.target.disabled=false; });
+  $('#auRun').addEventListener('click', async ()=>{
+    AUDIT_BUSY=true; renderAudit(m);
+    try{ AUDIT[view.auSite] = await api('/api/audit',{method:'POST',json:{site:view.auSite}}); }catch(e){ toast(t('err',{e:e.message})); }
+    AUDIT_BUSY=false; if(route().name==='audit') renderAudit(m);
+  });
+}
+
+// ---------------- weekly reports ----------------
+function mondayOf(d){ const x=new Date(d); const wd=(x.getDay()+6)%7; x.setDate(x.getDate()-wd); x.setHours(0,0,0,0); return x; }
+function weekDates(mon){ const m=new Date(mon+'T00:00:00'); return Array.from({length:7},(_,i)=>ds(addDays(m,i))); }
+function reportWeeks(){
+  let first='9999';
+  for(const md of Object.values(METRICS_DATA)) for(const d in md) if(d<first) first=d;
+  const out=[]; let mon = addDays(mondayOf(new Date()), -7);
+  for(let i=0;i<26;i++){ const m=ds(mon); if(ds(addDays(mon,6))<first) break; out.push(m); mon=addDays(mon,-7); }
+  return out;
+}
+async function renderReports(m, week){
+  if(week) return renderReport(m, week);
+  const weeks = reportWeeks();
+  m.innerHTML = `<h1>${t('nav_reports')}</h1><p class="sub">${t('rp_intro')}</p><div class="card">${weeks.length?`<table><tbody>${weeks.map((w,i)=>`<tr><td><b>${esc(fmtDate(w,true))} – ${esc(fmtDate(weekDates(w)[6],true))}</b>${i===0?` <span class="tag">${t('rp_latest')}</span>`:''}</td><td style="text-align:right"><a class="btn sm" href="#reports/${w}">${t('rp_open')}</a> <button class="btn sm" data-xl="${w}">${t('rp_excel')}</button></td></tr>`).join('')}</tbody></table>`:`<div class="muted">${t('no_data')}</div>`}</div>`;
+  m.querySelectorAll('[data-xl]').forEach(b=>b.addEventListener('click', async ()=>{ b.disabled=true; try{ await exportExcel(await buildReport(b.dataset.xl)); }catch(e){ toast(t('err',{e:e.message})); } b.disabled=false; }));
+}
+async function buildReport(week){
+  const dates = weekDates(week), prevDates = weekDates(ds(addDays(new Date(week+'T00:00:00'),-7)));
+  const runs = (await Promise.all(dates.map(d=>api('/api/run?date='+d).catch(()=>null)))).filter(Boolean);
+  const ign = new Set(S.ignored||[]);
+  const sites = (S.sites||[]).map(s=>{
+    const md = METRICS_DATA[s.id]||{};
+    const rows = CMP_ROWS.flatMap(g=>g.rows).map(row=>{
+      const cur = aggValue(row, aggParts(md,row,dates)), prev = aggValue(row, aggParts(md,row,prevDates));
+      return {row, cur, prev};
+    }).filter(r=>r.cur!==null || r.prev!==null);
+    // alerts seen during the week (deduplicated, with number of days)
+    const seen = {};
+    runs.forEach(rn=>(rn.alerts||[]).forEach(a=>{ if(a.siteId!==s.id || a.code==='weekly_report') return; const k=alertKey(a); if(ign.has(k)) return; (seen[k] ||= {a, days:0}).days++; }));
+    const lastRun = runs[runs.length-1]; const sc = lastRun?.sites?.find(x=>x.siteId===s.id);
+    return {site:s, rows, md, alerts:Object.values(seen).sort((x,y)=>levelRank(x.a.level)-levelRank(y.a.level)), sc};
+  });
+  const acct = {}; runs.forEach(rn=>(rn.alerts||[]).forEach(a=>{ if(a.siteId||a.code==='weekly_report') return; const k=alertKey(a); if(ign.has(k)) return; (acct[k] ||= {a, days:0}).days++; }));
+  return {week, dates, sites, account:Object.values(acct)};
+}
+function levelRank(l){ return l==='error'?0:l==='warn'?1:2; }
+const DAILY_KEYS = ['ga_users','ga_views','gsc_clicks','gsc_impr','gsc_pos','ads_earnings','ads_rpm','bing_clicks','psi_m_score'];
+async function renderReport(m, week){
+  m.innerHTML = `<div class="muted"><span class="spin"></span> ${t('loading')}</div>`;
+  const R = await buildReport(week);
+  const chgTxt = (row,c,p)=>{ if(c===null||p===null||p===undefined) return '—'; if(row.agg==='pos'){ const d=p-c; return Math.abs(d)<0.05?t('same'):(d>0?'▲ ':'▼ ')+Math.abs(d).toFixed(1); } if(row.agg==='ctr'){ const d=c-p; return Math.abs(d)<0.05?t('same'):(d>0?'▲ +':'▼ ')+d.toFixed(1)+'%p'; } if(!p) return c?t('new_q'):'—'; const pct=(c-p)/p*100; return Math.abs(pct)<0.5?t('same'):(pct>0?'▲ ':'▼ ')+fmtPct(pct); };
+  const chgCls = (row,c,p)=>{ if(c===null||p===null||p===undefined||!p&&row.agg!=='pos'||chgTxt(row,c,p)===t('same')) return 'flat'; const better = row.lower ? c<p : c>p; return better?'up':'down'; };
+  let html = `<div class="noprint row" style="margin-bottom:12px"><a href="#reports">${t('back_reports')}</a><span class="grow"></span><button class="btn" id="rpPrint">${t('rp_print')}</button><button class="btn" id="rpXl">${t('rp_excel')}</button></div>
+  <div class="report"><h1>Site Pulse · ${t('rp_title')}</h1><p class="sub">${esc(fmtDate(R.dates[0],true))} – ${esc(fmtDate(R.dates[6],true))} · ${t('rp_vs_prev')}</p>`;
+  if(R.account.length) html += `<div class="card"><h2>${t('rp_account')}</h2>${R.account.map(x=>`<div class="small">• ${esc(alertText(x.a))}</div>`).join('')}</div>`;
+  R.sites.forEach(S_=>{
+    const s=S_.site;
+    html += `<div class="card rpsite"><h2>${esc(s.name)} <span class="small muted mono">${esc(s.url)}</span></h2>`;
+    html += `<table><thead><tr><th>${t('metric')}</th><th class="num">${t('rp_this')}</th><th class="num">${t('rp_last')}</th><th class="num">${t('change')}</th></tr></thead><tbody>${S_.rows.map(({row,cur,prev})=>`<tr><td>${t(row.label)}</td><td class="num"><b>${cur===null?'—':esc(fmtVal(row.k,cur))}</b></td><td class="num muted">${prev===null?'—':esc(fmtVal(row.k,prev))}</td><td class="num"><span class="delta ${chgCls(row,cur,prev)}" style="display:inline">${chgTxt(row,cur,prev)}</span></td></tr>`).join('')}</tbody></table>`;
+    const keys = DAILY_KEYS.filter(k=>R.dates.some(d=>S_.md[d]?.[k]!==undefined));
+    if(keys.length) html += `<h3>${t('rp_daily')}</h3><div class="tablewrap"><table><thead><tr><th>${t('date')}</th>${keys.map(k=>`<th class="num">${t('m_'+k)}</th>`).join('')}</tr></thead><tbody>${R.dates.map(d=>`<tr><td>${esc(fmtDate(d))}</td>${keys.map(k=>`<td class="num">${S_.md[d]?.[k]!==undefined?esc(fmtVal(k,S_.md[d][k])):'—'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    const ps = S_.sc?.gsc?.pages, lk = S_.sc?.status?.links, psi = S_.sc?.status?.psi?.mobile;
+    const health = [];
+    if(ps) health.push(t('rp_h_index',{i:ps.indexed, n:ps.total, s:ps.slow||0}));
+    if(lk) health.push(t('rp_h_links',{n:lk.broken||0}));
+    if(psi && !psi.error) health.push(t('rp_h_speed',{n:Math.round(psi.score)}));
+    if(health.length) html += `<h3>${t('g_health')}</h3><p class="small">${health.map(esc).join(' · ')}</p>`;
+    html += `<h3>${t('rp_alerts')}</h3>` + (S_.alerts.length ? S_.alerts.map(x=>{ const info=alertInfo(x.a); return `<div class="rpalert ${x.a.level}"><b>${t('lvl_'+x.a.level)}</b> · ${esc(t(info.src))} — ${esc(alertText(x.a))} <span class="muted small">(${t('rp_days',{n:x.days})})</span>${info.how?`<div class="small muted">${t('how_fix')} ${esc(t(info.how, x.a.params||{}))}</div>`:''}</div>`; }).join('') : `<p class="small">${t('no_alerts')}</p>`);
+    html += `</div>`;
+  });
+  html += `<p class="small muted">${t('rp_generated',{d:new Date().toLocaleString(locale())})}</p></div>`;
+  m.innerHTML = html;
+  $('#rpPrint').addEventListener('click', ()=>window.print());
+  $('#rpXl').addEventListener('click', async e=>{ e.target.disabled=true; try{ await exportExcel(R); }catch(err){ toast(t('err',{e:err.message})); } e.target.disabled=false; });
+}
+async function exportExcel(R){
+  const summary = [[t('site'), t('metric'), t('rp_this'), t('rp_last'), t('change')]];
+  const daily = [[t('site'), t('date'), ...DAILY_KEYS.map(k=>t('m_'+k))]];
+  const alerts = [[t('site'), t('lvl_warn')+' / '+t('lvl_error'), t('rp_source'), t('alerts'), t('how_fix'), t('rp_days_col')]];
+  const round = v => v===null||v===undefined ? null : Math.round(v*100)/100;
+  R.sites.forEach(S_=>{
+    S_.rows.forEach(({row,cur,prev})=>{ const pct = cur!==null&&prev ? Math.round((cur-prev)/prev*1000)/10 : null; summary.push([S_.site.name, t(row.label), round(cur), round(prev), pct===null?'':pct+'%']); });
+    R.dates.forEach(d=>daily.push([S_.site.name, d, ...DAILY_KEYS.map(k=>round(S_.md[d]?.[k]))]));
+    S_.alerts.forEach(x=>{ const info=alertInfo(x.a); alerts.push([S_.site.name, t('lvl_'+x.a.level), t(info.src), alertText(x.a), info.how?t(info.how,x.a.params||{}):'', x.days]); });
+  });
+  R.account.forEach(x=>{ const info=alertInfo(x.a); alerts.push([t('scope_account'), t('lvl_'+x.a.level), t(info.src), alertText(x.a), info.how?t(info.how,x.a.params||{}):'', x.days]); });
+  const name = `Site Pulse ${R.dates[0]}~${R.dates[6]}`;
+  const res = await fetch('/api/xlsx',{method:'POST',headers:{'X-Site-Pulse':'1','Content-Type':'application/json'},body:JSON.stringify({filename:name, sheets:[{name:t('rp_sheet_summary'),rows:summary},{name:t('rp_sheet_daily'),rows:daily},{name:t('alerts'),rows:alerts}]})});
+  if(!res.ok) throw new Error(res.statusText);
+  const blob = await res.blob(); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name+'.xlsx'; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+
+// ---------------- settings ----------------
+async function renderSettings(m, r){
+  const auth = r.q.get('auth');
+  if(auth){ history.replaceState(null,'','#settings'); if(auth==='ok'){ toast(t('auth_ok')); await loadState(); renderNav(); } else if(auth==='no_client') toast(t('need_client')); else toast(t('auth_fail',{e:auth})); }
+  m.innerHTML = `<h1>${t('nav_settings')}</h1><p class="sub"></p>
+  <div class="card"><h2>${t('s_client')}</h2><p class="sub small">${t('s_client_help')}</p><div class="row">${S.hasClient?`<span class="st good"><i></i>${esc(t('client_set',{c:S.clientId}))}</span>`:''}<label class="btn"><input type="file" id="clientFile" accept=".json,application/json" hidden>${t('choose_json')}</label>${S.hasClient?`<button class="btn danger sm" id="clientClear">${t('remove')}</button>`:''}</div></div>
+  <div class="card"><h2>${t('s_account')}</h2><p class="sub small">${t('s_account_help')}</p><div class="row">${S.signedIn?`<span class="st good"><i></i>${esc(t('signed_in_as',{e:S.email||''}))}</span><a class="btn sm" href="/oauth/start">${t('sign_in')}</a><button class="btn danger sm" id="signOut">${t('sign_out')}</button>`: S.hasClient?`<a class="btn primary" href="/oauth/start">${t('sign_in')}</a>`:`<span class="muted">${t('need_client')}</span>`}</div></div>
+  <div class="card"><h2>${t('s_sites')}</h2><p class="sub small">${t('s_sites_help')}</p><div id="siteForms"></div><div class="row"><button class="btn" id="addSite">${t('add_site')}</button><button class="btn" id="reloadOpts">${t('reload_opts')}</button><span class="grow"></span><button class="btn primary" id="saveSites">${t('save')}</button></div><div id="optErr" class="small muted" style="margin-top:8px"></div></div>
+  <div class="card"><h2>${t('s_bing')}</h2><p class="sub small">${t('s_bing_help')}</p><div class="row"><input type="password" id="bingKey" class="grow" autocomplete="off" placeholder="${S.hasBingKey?esc(t('key_saved')):''}"><button class="btn primary" id="saveBing">${t('save')}</button>${S.hasBingKey?`<button class="btn danger sm" id="clearBing">${t('remove')}</button>`:''}</div></div>
+  <div class="card"><h2>${t('s_psi')}</h2><p class="sub small">${t('s_psi_help')}</p><div class="row"><input type="password" id="psiKey" class="grow" autocomplete="off" placeholder="${S.hasPsiKey?esc(t('key_saved')):''}"><button class="btn primary" id="savePsi">${t('save')}</button>${S.hasPsiKey?`<button class="btn danger sm" id="clearPsi">${t('remove')}</button>`:''}</div></div>
+  <div class="card"><h2>${t('s_sched')}</h2><p class="sub small">${t('s_sched_help')}</p><div class="grid2">
+    <label class="f">${t('sched_time')}<input type="time" id="cfgTime" value="${esc(S.schedule||'09:00')}"></label>
+    <label class="f">${t('threshold')}<input type="number" id="cfgThr" min="5" max="95" value="${S.threshold||30}"></label>
+    <label class="f">${t('ssl_warn')}<input type="number" id="cfgSsl" min="1" max="120" value="${S.sslWarn||14}"></label>
+    <label class="f">${t('domain_warn')}<input type="number" id="cfgDom" min="1" max="365" value="${S.domainWarn||30}"></label></div>
+    <div class="row" style="margin-top:12px">${'Notification' in window ? `<label class="row small"><input type="checkbox" id="notif" ${typeof Notification!=='undefined'&&Notification.permission==='granted'?'checked':''}> ${t('notif')}</label>`:''}<span class="grow"></span><button class="btn primary" id="saveCfg">${t('save')}</button></div></div>
+  <div class="card"><h2>${t('s_backup')}</h2><p class="sub small">${t('s_backup_help')}</p>
+    <div class="grid2"><label class="f">${t('bk_pw')}<input type="password" id="bkPw" autocomplete="new-password"></label><label class="f">${t('bk_pw2')}<input type="password" id="bkPw2" autocomplete="new-password"></label></div>
+    <label class="row small" style="margin-top:8px"><input type="checkbox" id="bkLogin"> ${t('bk_login')}</label>
+    <label class="row small"><input type="checkbox" id="bkHist" checked> ${t('bk_history')}</label>
+    <div class="row" style="margin-top:12px"><button class="btn primary" id="bkExport">${t('bk_export')}</button><span class="grow"></span><label class="btn"><input type="file" id="bkFile" accept=".sitepulse" hidden>${t('bk_import')}</label></div></div>
+  <div class="card"><h2>${t('s_about')}</h2><p class="small">Site Pulse ${esc(S.version)} · ${t('data_dir')}: <span class="mono">${esc(S.dataDir)}</span></p><p class="small">${t('window_browser')}: <span class="mono">${esc(S.browser || t('default_browser'))}</span></p><button class="btn danger" id="quitBtn">${t('quit')}</button></div>`;
+  $('#clientFile').addEventListener('change', async e=>{ const f=e.target.files[0]; if(!f) return; try{ await api('/api/client',{method:'POST',body:await f.text()}); toast(t('saved')); await loadState(); render(); }catch(err){ toast(t('err',{e:err.message})); } });
+  $('#clientClear')?.addEventListener('click', async ()=>{ await api('/api/client/clear',{method:'POST'}); await loadState(); render(); });
+  $('#signOut')?.addEventListener('click', async ()=>{ await api('/api/signout',{method:'POST'}); await loadState(); render(); });
+  $('#saveBing').addEventListener('click', async ()=>{ const v=$('#bingKey').value.trim(); if(!v) return; await api('/api/config',{method:'POST',json:{bingKey:v}}); toast(t('saved')); OPTIONS=null; await loadState(); render(); });
+  $('#savePsi').addEventListener('click', async ()=>{ const v=$('#psiKey').value.trim(); if(!v) return; await api('/api/config',{method:'POST',json:{psiKey:v}}); toast(t('saved')); await loadState(); render(); });
+  $('#clearPsi')?.addEventListener('click', async ()=>{ await api('/api/config',{method:'POST',json:{psiKey:''}}); await loadState(); render(); });
+  $('#clearBing')?.addEventListener('click', async ()=>{ await api('/api/config',{method:'POST',json:{bingKey:''}}); await loadState(); render(); });
+  $('#saveCfg').addEventListener('click', async ()=>{ await api('/api/config',{method:'POST',json:{schedule:$('#cfgTime').value, threshold:+$('#cfgThr').value, sslWarn:+$('#cfgSsl').value, domainWarn:+$('#cfgDom').value}}); toast(t('saved')); await loadState(); });
+  $('#notif')?.addEventListener('change', async e=>{ if(e.target.checked){ const p = await Notification.requestPermission(); e.target.checked = p==='granted'; } });
+  $('#bkExport').addEventListener('click', async ()=>{
+    const pw=$('#bkPw').value; if([...pw].length<8){ toast(t('bk_pw_short')); return; } if(pw!==$('#bkPw2').value){ toast(t('bk_pw_diff')); return; }
+    try{ const res = await fetch('/api/backup/export',{method:'POST',headers:{'X-Site-Pulse':'1','Content-Type':'application/json'},body:JSON.stringify({password:pw, includeLogin:$('#bkLogin').checked, includeHistory:$('#bkHist').checked})});
+      if(!res.ok){ let e=res.statusText; try{ e=(await res.json()).error||e; }catch(x){} throw new Error(e); }
+      const blob = await res.blob(); const name = (res.headers.get('Content-Disposition')||'').match(/filename="([^"]+)"/)?.[1] || 'site-pulse-backup.sitepulse';
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      $('#bkPw').value=''; $('#bkPw2').value=''; toast(t('bk_saved'));
+    }catch(err){ toast(t('err',{e:err.message})); } });
+  $('#bkFile').addEventListener('change', async e=>{ const f=e.target.files[0]; e.target.value=''; if(!f) return;
+    const pw = $('#bkPw').value; if(!pw){ toast(t('bk_ask_pw')); return; } if(!confirm(t('bk_confirm'))) return;
+    try{ $('#bkPw').value=''; $('#bkPw2').value='';
+      const r = await api('/api/backup/import',{method:'POST',headers:{'X-Backup-Password':encodeURIComponent(pw),'Content-Type':'application/octet-stream'},body:await f.arrayBuffer()});
+      toast(t('bk_done',{n:r.sites})+' '+(r.login?t('bk_done_login'):t('bk_done_nologin'))); OPTIONS=null; await loadState(); try{ await loadRun(); }catch(x){} try{ await loadMetrics(); }catch(x){} renderNav(); render();
+    }catch(err){ toast(/wrong password/.test(err.message)?t('bk_bad_pw'):/not a Site Pulse backup/.test(err.message)?t('bk_not_file'):t('err',{e:err.message})); } });
+  $('#quitBtn').addEventListener('click', async ()=>{ await api('/api/quit',{method:'POST'}); document.body.innerHTML=`<main><div class="card">${t('quit_done')}</div></main>`; setTimeout(()=>window.close(), 800); });
+  let draft = JSON.parse(JSON.stringify(S.sites||[]));
+  if(!draft.length) draft.push({id:'',name:'',url:'',gscProperty:'',gaProperty:'',adsDomain:'',bingSite:'',keyPages:[]});
+  const drawForms = ()=>{
+    const o = OPTIONS||{}; const opt = (list, val) => `<option value="">${t('none_opt')}</option>` + (list||[]).map(x=>`<option value="${esc(x.v)}" ${x.v===val?'selected':''}>${esc(x.l)}</option>`).join('') + (val && !(list||[]).some(x=>x.v===val) ? `<option value="${esc(val)}" selected>${esc(val)}</option>`:'');
+    const gsc = (o.gsc||[]).map(x=>({v:x.url,l:x.url})), ga=(o.ga||[]).map(x=>({v:x.id,l:`${x.name} (${x.id.replace('properties/','')}) — ${x.account}`})), bing=(o.bing||[]).map(x=>({v:x,l:x})), ads=(o.ads||[]).map(x=>({v:x.domain.replace(/^www\./,''),l:`${x.domain} · ${stName(x.state)}`}));
+    $('#siteForms').innerHTML = draft.map((s,i)=>`<div class="siteform" data-i="${i}"><div class="grid2">
+      <label class="f">${t('f_name')}<input type="text" data-f="name" value="${esc(s.name)}"></label>
+      <label class="f">${t('f_url')}<input type="text" data-f="url" value="${esc(s.url)}" placeholder="https://example.com/"></label>
+      <label class="f">${t('f_gsc')}<select data-f="gscProperty">${opt(gsc,s.gscProperty)}</select></label>
+      <label class="f">${t('f_ga')}<select data-f="gaProperty">${opt(ga,s.gaProperty)}</select></label>
+      <label class="f">${t('f_ads')}<select data-f="adsDomain">${opt(ads,s.adsDomain)}</select></label>
+      <label class="f">${t('f_bing')}<select data-f="bingSite">${opt(bing,s.bingSite)}</select></label></div>
+      <label class="f" style="margin-top:10px">${t('f_pages')}<textarea data-f="keyPages" rows="2">${esc((s.keyPages||[]).join('\n'))}</textarea></label>
+      <div class="row" style="margin-top:8px"><button class="btn sm" data-auto="${i}">${t('automatch')}</button><span class="grow"></span><button class="btn danger sm" data-rm="${i}">${t('remove')}</button></div></div>`).join('');
+    $('#siteForms').querySelectorAll('.siteform').forEach(f=>{ const i=+f.dataset.i; f.querySelectorAll('[data-f]').forEach(inp=>inp.addEventListener('input', ()=>{ const k=inp.dataset.f; draft[i][k] = k==='keyPages' ? inp.value.split('\n') : inp.value; })); });
+    $('#siteForms').querySelectorAll('[data-rm]').forEach(b=>b.addEventListener('click', ()=>{ draft.splice(+b.dataset.rm,1); drawForms(); }));
+    $('#siteForms').querySelectorAll('[data-auto]').forEach(b=>b.addEventListener('click', ()=>{ autoMatch(draft[+b.dataset.auto]); drawForms(); }));
+    const errs = o.errors||{}; $('#optErr').textContent = OPTIONS===null && S.signedIn ? t('loading') : Object.entries(errs).map(([k,v])=>`${k}: ${v}`).join(' · ');
+  };
+  $('#addSite').addEventListener('click', ()=>{ draft.push({id:'',name:'',url:'',gscProperty:'',gaProperty:'',adsDomain:'',bingSite:'',keyPages:[]}); drawForms(); });
+  $('#saveSites').addEventListener('click', async ()=>{
+    const clean = draft.filter(s=>(s.url||'').trim()).map(s=>({...s, keyPages:(s.keyPages||[]).map(x=>x.trim()).filter(Boolean)}));
+    try{ await api('/api/sites',{method:'POST',json:clean}); toast(t('saved')); await loadState(); draft = JSON.parse(JSON.stringify(S.sites)); drawForms(); renderNav(); }catch(e){ toast(t('err',{e:e.message})); }
+  });
+  const loadOpts = async ()=>{ if(!S.signedIn && !S.hasBingKey){ OPTIONS={}; drawForms(); return; } OPTIONS=null; drawForms(); try{ OPTIONS = await api('/api/options'); }catch(e){ OPTIONS={errors:{google:e.message}}; } drawForms(); };
+  $('#reloadOpts').addEventListener('click', loadOpts);
+  drawForms(); if(OPTIONS===null) loadOpts();
+}
+function hostOf(u){ try{ return new URL(/^https?:/.test(u)?u:'https://'+u).hostname.toLowerCase(); }catch(e){ return ''; } }
+function autoMatch(s){
+  const o = OPTIONS||{}; const host = hostOf(s.url); if(!host) return;
+  const bare = host.replace(/^www\./,''); const path = (()=>{ try{ return new URL(/^https?:/.test(s.url)?s.url:'https://'+s.url).pathname; }catch(e){ return '/'; } })();
+  if(!s.name) s.name = bare + (path.length>1 ? path.replace(/\/$/,'') : '');
+  // Search Console: longest matching URL-prefix property, else domain property
+  const gsc = (o.gsc||[]).map(x=>x.url);
+  const prefixes = gsc.filter(u=>!u.startsWith('sc-domain:') && (s.url.startsWith(u) || ('https://'+host+path).startsWith(u))).sort((a,b)=>b.length-a.length);
+  s.gscProperty = prefixes[0] || gsc.find(u=>u==='sc-domain:'+bare) || gsc.find(u=>u.startsWith('sc-domain:') && bare.endsWith(u.slice(10))) || s.gscProperty;
+  const ga = (o.ga||[]).find(x=>x.name.toLowerCase().includes(bare)); if(ga && !s.gaProperty) s.gaProperty = ga.id;
+  const ads = (o.ads||[]).find(x=>x.domain.replace(/^www\./,'')===bare || bare.endsWith('.'+x.domain.replace(/^www\./,''))); if(ads) s.adsDomain = ads.domain.replace(/^www\./,'');
+  const bing = (o.bing||[]).filter(u=>hostOf(u).replace(/^www\./,'')===bare).sort((a,b)=>b.length-a.length); if(bing.length) s.bingSite = bing[0];
+}
+
+// tell the app when this window goes away, so it can quit right away
+// keep a live connection open: when this window closes, Site Pulse sees it drop and quits
+// Each window Site Pulse opens carries its own token (?w=...). sessionStorage keeps it for this
+// window across reloads and the Google sign-in round trip.
+try{
+  const q = new URLSearchParams(location.search).get('w');
+  if(q){ try{ sessionStorage.setItem('sp_w', q); }catch(e){} }
+  let tok = q; if(!tok){ try{ tok = sessionStorage.getItem('sp_w'); }catch(e){} }
+  const es = new EventSource('/api/live?w='+encodeURIComponent(tok||''));
+  const goAway = ()=>{
+    es.close();
+    document.body.innerHTML = `<main><div class="card">${t('replaced_window')}</div></main>`;
+    setTimeout(()=>window.close(), 300);
+  };
+  // a newer Site Pulse window was opened: stop holding the app open and close this one
+  es.addEventListener('replaced', goAway);
+  // the app answered "not the current window" (204): EventSource stops for good
+  es.onerror = ()=>{ if(es.readyState===EventSource.CLOSED) goAway(); };
+}catch(e){}
+// ---------------- boot ----------------
+(async function boot(){
+  await loadState();
+  try{ await loadRun(); }catch(e){ RUN=null; }
+  try{ await loadMetrics(); }catch(e){}
+  await render();
+  // refresh when a scheduled check completes in the background
+  let lastDates = (S.runDates||[]).join(), lastBusy = S.busy;
+  setInterval(async ()=>{
+    try{ const st = await api('/api/state'); const changed = st.runDates.join()!==lastDates || st.busy!==lastBusy;
+      lastDates = st.runDates.join(); lastBusy = st.busy; S = {...S, ...st};
+      if(changed){ if(!st.busy){ await loadRun(); await loadMetrics(); notifyCritical(RUN); } if(route().name!=='settings') render(); else renderNav(); } }catch(e){}
+  }, 15000);
+})();
+</script>
+</body>
+</html>

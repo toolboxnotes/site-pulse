@@ -1,0 +1,9 @@
+dist/
+*.exe
+*.zip
+build/app.res
+/sitepulse
+*.sitepulse
+config.json
+token.json
+.DS_Store
