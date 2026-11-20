@@ -4,7 +4,7 @@
 
 Site Pulse is a small desktop app for Windows and macOS. Once a day it checks that your sites are up and healthy, pulls your numbers from Google and Bing, and tells you what changed, what is wrong, and what to do about it. Everything runs on your own computer: it talks directly to the official APIs with your own Google sign-in, and nothing goes through a third-party server.
 
-Made by **[Toolbox Notes](https://toolboxnotes.com/)** — a blog of free, practical tools and guides ([English](https://toolboxnotes.com/en/) · [한국어](https://toolboxnotes.com/ko/)).
+Made by **[Toolbox Notes](https://toolboxnotes.com/)** — a blog of free, practical tools and guides ([English](https://toolboxnotes.com/en/) · [Korean](https://toolboxnotes.com/ko/)).
 
 ## Download
 
@@ -66,7 +66,7 @@ All versions and changes: [Releases](https://github.com/toolboxnotes/site-pulse/
 - Weekly report every Monday — print / save as PDF, or download Excel
 
 **Other**
-- Interface in English, 한국어 and 中文
+- Interface in English, Korean and Chinese
 - Move to another computer: export settings and keys to one password-encrypted file (AES-256-GCM)
 - Closes completely when you close its window — no tray icon, no background service
 
@@ -198,7 +198,8 @@ SITEPULSE_FAKE_API=http://127.0.0.1:9910 SITEPULSE_DATA=/tmp/sitepulse-demo go r
 | `store.go` | Settings and data on disk |
 | `browser_*.go`, `front_windows.go` | Finding Chrome / Edge and showing the window |
 | `web/index.html` | The whole interface (EN / KO / ZH) |
-| `docs/README.zh.txt` | User guide and changelog (Chinese) |
+| `docs/README.txt` | Plain-text user guide (included in the Windows download) |
+| `CHANGELOG.md` | Changes in each version |
 
 ## Feedback
 
