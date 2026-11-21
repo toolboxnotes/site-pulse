@@ -118,7 +118,7 @@ func (a *App) quitWhenUIGone(grace time.Duration) {
 			return
 		case <-time.After(time.Second):
 		}
-		if a.isBusy() {
+		if a.isBusy() || signingIn() {
 			continue
 		}
 		a.liveMu.Lock()

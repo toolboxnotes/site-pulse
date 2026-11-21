@@ -148,6 +148,7 @@ func (a *App) finishAuth(ctx context.Context, state, code string) error {
 	pendingMu.Lock()
 	p, ok := pending[state]
 	delete(pending, state)
+	authReturnedAt = time.Now()
 	pendingMu.Unlock()
 	if !ok {
 		return errors.New("invalid or expired state")
@@ -299,6 +300,25 @@ func (a *App) canSubmitSitemaps() bool {
 	}
 	for _, sc := range strings.Fields(a.store.Token.Scope) {
 		if sc == scopeWebmasters {
+			return true
+		}
+	}
+	return false
+}
+
+// signingIn reports whether a Google sign-in was started in the last 10 minutes and has not
+// come back yet. While the window shows Google's pages it is not connected to Site Pulse, so
+// the app must not quit then (otherwise Google's redirect back finds nothing listening).
+var authReturnedAt time.Time // when Google last redirected back (guarded by pendingMu)
+
+func signingIn() bool {
+	pendingMu.Lock()
+	defer pendingMu.Unlock()
+	if time.Since(authReturnedAt) < 30*time.Second { // give the page time to reconnect
+		return true
+	}
+	for _, p := range pending {
+		if time.Since(p.created) < 10*time.Minute {
 			return true
 		}
 	}

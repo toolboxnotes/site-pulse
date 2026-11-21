@@ -359,6 +359,10 @@ func (a *App) handleOAuthStart(w http.ResponseWriter, r *http.Request) {
 func (a *App) handleOAuthCallback(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	if e := q.Get("error"); e != "" {
+		pendingMu.Lock()
+		delete(pending, q.Get("state"))
+		authReturnedAt = time.Now()
+		pendingMu.Unlock()
 		http.Redirect(w, r, "/#settings?auth="+url.QueryEscape(e), http.StatusFound)
 		return
 	}

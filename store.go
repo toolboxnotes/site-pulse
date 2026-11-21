@@ -10,7 +10,7 @@ import (
 	"sync"
 )
 
-const appVersion = "1.3.9"
+const appVersion = "1.3.10"
 
 // ---------- data directory ----------
 

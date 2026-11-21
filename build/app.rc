@@ -1,7 +1,7 @@
 1 ICON "icon.ico"
 1 VERSIONINFO
-FILEVERSION 1,3,9,0
-PRODUCTVERSION 1,3,9,0
+FILEVERSION 1,3,10,0
+PRODUCTVERSION 1,3,10,0
 BEGIN
   BLOCK "StringFileInfo"
   BEGIN
@@ -9,8 +9,8 @@ BEGIN
     BEGIN
       VALUE "FileDescription", "Site Pulse"
       VALUE "ProductName", "Site Pulse"
-      VALUE "FileVersion", "1.3.9"
-      VALUE "ProductVersion", "1.3.9"
+      VALUE "FileVersion", "1.3.10"
+      VALUE "ProductVersion", "1.3.10"
       VALUE "OriginalFilename", "Site Pulse.exe"
     END
   END

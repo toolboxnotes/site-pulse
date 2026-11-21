@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.3.10 — 2026-11-21
+- Fixed: signing in to Google failed with "127.0.0.1 refused to connect". While the window showed Google's sign-in pages it was not connected to Site Pulse, so the app quit after 5 seconds and Google's redirect back found nothing listening. Site Pulse now stays running during a sign-in (up to 10 minutes) and for 30 seconds after Google sends you back.
+
 ## 1.3.9 — 2026-11-17
 - Fixed: on Windows the window could stay invisible on the first launch, so Site Pulse had to be opened twice. The browser was started with a "hide window" flag (meant only to avoid a console window), and a freshly started Chrome applied it to its first window. The flag is gone, and a hidden window is now shown anyway.
 

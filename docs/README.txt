@@ -1,4 +1,4 @@
-Site Pulse 1.3.9 — daily website health check
+Site Pulse 1.3.10 — daily website health check
 =============================================
 
 A daily health check for your websites: Google Analytics, Search Console,
@@ -38,7 +38,7 @@ RUNNING IT
   (Edge if Chrome is not installed). Closing the window quits Site Pulse.
   First run: if Windows shows "Windows protected your PC", click
   More info -> Run anyway (the app is not code-signed).
-- Mac: unzip Site-Pulse-Mac-v1.3.9.zip and move "Site Pulse.app" to
+- Mac: unzip Site-Pulse-Mac-v1.3.10.zip and move "Site Pulse.app" to
   Applications. If macOS says the developer cannot be verified: right-click
   -> Open -> Open. If it still won't open: System Settings -> Privacy &
   Security -> Open Anyway.
