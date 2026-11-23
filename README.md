@@ -12,8 +12,10 @@ Made by **[Toolbox Notes](https://toolboxnotes.com/)** — a blog of free, pract
 
 | System | File | |
 |---|---|---|
-| Windows 10 / 11 (64-bit) | `Site-Pulse-Windows-v1.3.10.zip` | [Download](https://github.com/toolboxnotes/site-pulse/releases/latest/download/Site-Pulse-Windows-v1.3.10.zip) |
-| macOS 11+ (Apple Silicon and Intel) | `Site-Pulse-Mac-v1.3.10.zip` | [Download](https://github.com/toolboxnotes/site-pulse/releases/latest/download/Site-Pulse-Mac-v1.3.10.zip) |
+| Windows 10 / 11 (64-bit) | `Site-Pulse-Windows.zip` | [Download](https://github.com/toolboxnotes/site-pulse/releases/latest/download/Site-Pulse-Windows.zip) |
+| macOS 11+ (Apple Silicon and Intel) | `Site-Pulse-Mac.zip` | [Download](https://github.com/toolboxnotes/site-pulse/releases/latest/download/Site-Pulse-Mac.zip) |
+
+These links always give the newest version. Each release also keeps version-named copies (`Site-Pulse-Windows-v1.3.10.zip` etc.) if you need a specific version.
 
 No installer needed: unzip and double-click **Site Pulse.exe** (Windows) or **Site Pulse.app** (macOS). Chrome or Edge should be installed for the app window. Then follow [Getting started](#getting-started) to connect your Google account.
 
