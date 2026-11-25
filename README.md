@@ -203,6 +203,12 @@ SITEPULSE_FAKE_API=http://127.0.0.1:9910 SITEPULSE_DATA=/tmp/sitepulse-demo go r
 | `docs/README.txt` | Plain-text user guide (included in the Windows download) |
 | `CHANGELOG.md` | Changes in each version |
 
+## More from Toolbox Notes
+
+- [All free tools](https://toolboxnotes.com/en/tools/) · [무료 도구 모음](https://toolboxnotes.com/ko/tools/)
+- [Site Lens: IP lookup, domain Whois and website traffic checker](https://toolboxnotes.com/en/posts/site-lens-domain-ip-lookup/) · [한국어](https://toolboxnotes.com/ko/posts/site-lens-domain-ip-lookup/)
+- [PDF Toolbox: free offline PDF converter](https://toolboxnotes.com/en/posts/offline-pdf-toolbox/) · [한국어](https://toolboxnotes.com/ko/posts/offline-pdf-toolbox/)
+
 ## Feedback
 
 Bug reports and ideas are welcome in [Issues](../../issues), or on the [Toolbox Notes blog](https://toolboxnotes.com/).
