@@ -25,8 +25,8 @@ cat > "$APP/Info.plist" <<'PL'
 <key>CFBundleName</key><string>Site Pulse</string>
 <key>CFBundleDisplayName</key><string>Site Pulse</string>
 <key>CFBundleIdentifier</key><string>com.toolboxnotes.sitepulse</string>
-<key>CFBundleVersion</key><string>1.3.10</string>
-<key>CFBundleShortVersionString</key><string>1.3.10</string>
+<key>CFBundleVersion</key><string>1.3.11</string>
+<key>CFBundleShortVersionString</key><string>1.3.11</string>
 <key>CFBundleExecutable</key><string>Site Pulse</string>
 <key>CFBundleIconFile</key><string>AppIcon</string>
 <key>CFBundlePackageType</key><string>APPL</string>

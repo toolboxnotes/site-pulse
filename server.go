@@ -904,15 +904,21 @@ func (a *App) handleIndexNowSubmit(w http.ResponseWriter, r *http.Request) {
 	ps := a.loadPages(s.ID)
 	pagesMu.Unlock()
 	urls := in.URLs
-	if len(urls) == 0 { // default: everything Google hasn't indexed yet
+	skipped := 0
+	if len(urls) == 0 { // default: pages Google hasn't indexed yet that are new or changed since the last IndexNow send
 		for u, p := range ps.Pages {
-			if p.Removed == "" && p.Verdict != "PASS" {
+			if p.Removed != "" || p.Verdict == "PASS" {
+				continue
+			}
+			if needsIndexNow(p) {
 				urls = append(urls, u)
+			} else {
+				skipped++
 			}
 		}
 	}
 	if len(urls) == 0 {
-		writeJSONResp(w, 200, map[string]any{"ok": true, "count": 0})
+		writeJSONResp(w, 200, map[string]any{"ok": true, "count": 0, "skipped": skipped})
 		return
 	}
 	if err := indexNowSubmit(ctx, s, key, urls); err != nil {
@@ -929,7 +935,7 @@ func (a *App) handleIndexNowSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(a.pagesPath(s.ID), ps)
 	pagesMu.Unlock()
-	writeJSONResp(w, 200, map[string]any{"ok": true, "count": len(urls)})
+	writeJSONResp(w, 200, map[string]any{"ok": true, "count": len(urls), "skipped": skipped})
 }
 
 // handleTrack adds or removes a tracked query and backfills 90 days for a new one.

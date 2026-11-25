@@ -57,8 +57,22 @@ const (
 	inspectOldPerRun = 10 // indexed pages re-checked per day (oldest check first)
 )
 
+// needsIndexNow: IndexNow is only for new or changed pages. Sending the same unchanged
+// URL again does not speed up crawling and can make search engines trust the pings less,
+// so a page is sent only if it was never sent, or its sitemap lastmod is newer than the last send.
+func needsIndexNow(p *PageTrack) bool {
+	if p == nil || p.Removed != "" {
+		return false
+	}
+	if p.Submitted == "" {
+		return true
+	}
+	return len(p.LastMod) >= 10 && p.LastMod[:10] > p.Submitted
+}
+
 // trackPages updates the page list from the sitemap and inspects a batch of pages.
 // It returns the URLs that are new today (for IndexNow) and a summary for the run.
+// Pages whose sitemap lastmod changed are also sent to IndexNow (not counted as new).
 func (a *App) trackPages(ctx context.Context, s Site, tok string, canInspect bool) (newURLs []string, summary map[string]any, err error) {
 	urls, err := siteSitemapURLs(ctx, s, 5000)
 	if err != nil {
@@ -70,6 +84,7 @@ func (a *App) trackPages(ctx context.Context, s Site, tok string, canInspect boo
 	pagesMu.Unlock()
 	first := len(ps.Pages) == 0
 	inSitemap := map[string]bool{}
+	var changedURLs []string
 	for _, u := range urls {
 		inSitemap[u.Loc] = true
 		p := ps.Pages[u.Loc]
@@ -79,6 +94,9 @@ func (a *App) trackPages(ctx context.Context, s Site, tok string, canInspect boo
 			if !first {
 				newURLs = append(newURLs, u.Loc)
 			}
+		}
+		if p.LastMod != "" && u.LastMod != "" && u.LastMod != p.LastMod {
+			changedURLs = append(changedURLs, u.Loc)
 		}
 		p.LastMod = u.LastMod
 		p.Removed = ""
@@ -141,16 +159,23 @@ func (a *App) trackPages(ctx context.Context, s Site, tok string, canInspect boo
 		wg.Wait()
 	}
 
-	// IndexNow for new pages
+	// IndexNow for new pages and pages whose lastmod changed (only ones not yet sent for this version)
 	a.store.mu.Lock()
 	key := a.store.Config.IndexNowKey
 	a.store.mu.Unlock()
-	if key != "" && len(newURLs) > 0 {
+	var send []string
+	for _, u := range append(append([]string{}, newURLs...), changedURLs...) {
+		if p := ps.Pages[u]; needsIndexNow(p) && p.Submitted != today {
+			send = append(send, u)
+		}
+	}
+	if key != "" && len(send) > 0 {
 		if ok, _ := indexNowVerified(ctx, s, key); ok {
-			if err := indexNowSubmit(ctx, s, key, newURLs); err == nil {
-				for _, u := range newURLs {
+			if err := indexNowSubmit(ctx, s, key, send); err == nil {
+				for _, u := range send {
 					ps.Pages[u].Submitted = today
 				}
+				log.Printf("IndexNow: sent %d page(s) for %s (%d new, %d changed)", len(send), s.ID, len(newURLs), len(changedURLs))
 			}
 		}
 	}

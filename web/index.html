@@ -333,7 +333,9 @@ const I18N = {
  in_setup:["Set up IndexNow","IndexNow 설정","设置 IndexNow"], in_step1:["Download the key file:","키 파일 다운로드:","下载密钥文件："], in_download:["Download {f}","{f} 다운로드","下载 {f}"],
  in_step2:["Upload it to the site root so this address opens it:","사이트 루트에 올려서 이 주소에서 열리게 하세요:","上传到网站根目录，让这个地址能打开它："], in_step3:["Click “Check again”.","‘다시 확인’을 누르세요.","点“重新检查”。"],
  in_not_verified:["Key file not found on the site yet","사이트에서 키 파일을 아직 찾지 못했습니다","网站上还没找到密钥文件"], in_verify:["Check again","다시 확인","重新检查"], in_verified:["IndexNow is active","IndexNow 사용 중","IndexNow 已启用"],
- in_auto:["New pages are submitted automatically during the daily check.","새 페이지는 매일 확인할 때 자동으로 제출됩니다.","新页面会在每天检查时自动提交。"], in_submit_all:["Submit all not-indexed pages now","미색인 페이지 지금 모두 제출","立即提交所有未收录页面"], in_submitted:["Submitted {n} pages","{n}개 페이지 제출","已提交 {n} 个页面"],
+ in_auto:["New pages and pages with a newer lastmod are submitted automatically during the daily check.","새 페이지와 lastmod가 바뀐 페이지는 매일 확인할 때 자동으로 제출됩니다.","新页面和 lastmod 有变化的页面会在每天检查时自动提交。"], in_submit_all:["Submit new or changed pages now","새·수정된 페이지 지금 제출","立即提交新增或修改的页面"], in_submitted:["Submitted {n} pages","{n}개 페이지 제출","已提交 {n} 个页面"],
+ in_skipped:["{n} pages were already sent and have not changed since — skipped (resending unchanged pages does not help)","{n}개는 이미 제출했고 그 뒤로 바뀌지 않아 건너뛰었습니다 (바뀌지 않은 페이지를 다시 보내도 도움이 되지 않습니다)","{n} 个页面已提交过且之后没有修改，已跳过（重复提交未修改的页面没有帮助）"],
+ in_nothing:["Nothing to send: no new or changed pages since the last IndexNow submission","보낼 페이지가 없습니다: 마지막 IndexNow 제출 뒤 새로 생기거나 바뀐 페이지가 없습니다","没有需要提交的页面：上次 IndexNow 提交后没有新增或修改的页面"],
  a_new_not_indexed:["{n} new pages are still not in Google after 7 days","새 페이지 {n}개가 7일이 지나도 Google에 색인되지 않았습니다","{n} 个新页面超过 7 天还没被 Google 收录"],
  fix_new_not_indexed:["Open Pages → Indexing and click “Request indexing” for them. Also link to new posts from the homepage or related articles.","페이지 → 색인에서 ‘색인 요청’을 누르세요. 홈이나 관련 글에서 새 글로 링크도 걸어 주세요.","到 页面 → 收录跟踪 点“请求收录”。也在首页或相关文章里加上指向新文章的链接。"],
  src_psi:["PageSpeed","PageSpeed","PageSpeed"], src_pages:["Sitemap","사이트맵","站点地图"],
@@ -1271,7 +1273,7 @@ async function renderIndexTab(el){
   el.querySelectorAll('[data-req]').forEach(b=>b.addEventListener('click', async ()=>{ await copy(b.dataset.req); toast(t('gs_copied')); window.open(gscHome, '_blank', 'noopener'); }));
   $('#gsCopyAll',el)?.addEventListener('click', async ()=>{ const us = rows.filter(p=>!p.removed && status(p)!=='indexed').map(p=>p.url); await copy(us.join('\n')); toast(t('gs_copied_all',{n:us.length})); });
   $('#gsSubmit',el)?.addEventListener('click', async e=>{ e.target.disabled=true; e.target.innerHTML=`<span class="spin"></span> ${t('loading')}`; try{ const r = await api('/api/gsc/sitemaps/submit',{method:'POST',json:{site:site.id}}); toast(t('gs_submitted',{n:(r.files||[]).length})); }catch(err){ toast(/need_gsc_write/.test(err.message)?t('gs_need_scope'):t('err',{e:err.message})); } renderIndexTab(el); });
-  $('#inSubmit',el)?.addEventListener('click', async e=>{ e.target.disabled=true; try{ const r = await api('/api/indexnow/submit',{method:'POST',json:{site:site.id}}); toast(t('in_submitted',{n:r.count})); }catch(err){ toast(t('err',{e:err.message})); } renderIndexTab(el); });
+  $('#inSubmit',el)?.addEventListener('click', async e=>{ e.target.disabled=true; try{ const r = await api('/api/indexnow/submit',{method:'POST',json:{site:site.id}}); toast(r.count ? t('in_submitted',{n:r.count}) + (r.skipped ? ' · ' + t('in_skipped',{n:r.skipped}) : '') : t('in_nothing')); }catch(err){ toast(t('err',{e:err.message})); } renderIndexTab(el); });
 }
 async function renderTopTab(el){
   const site = (S.sites||[]).find(x=>x.id===view.pgSite);
